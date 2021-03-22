@@ -2,6 +2,8 @@ import { useMutation } from "@apollo/client";
 import gql from "graphql-tag";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { authTokenVar, isLoggedInVar } from "../apollo";
+import { LOCALSTORAGE_TOKEN } from "../constants";
 import {
   loginMutation,
   loginMutationVariables,
@@ -31,14 +33,38 @@ export const Login = () => {
     handleSubmit,
     formState,
   } = useForm<ILoginForm>({ mode: "onChange" });
+  const onCompleted = (data: loginMutation) => {
+    const {
+      login: { ok, token, error },
+    } = data;
+    console.log(ok, error);
+    if (ok && token) {
+      localStorage.setItem(LOCALSTORAGE_TOKEN, token);
+      authTokenVar(token);
+      isLoggedInVar(true);
+    }
+  };
   const [loginMutation, { data: loginMutationResult, loading }] = useMutation<
     loginMutation,
     loginMutationVariables
-  >(LOGIN_MUTATION);
+  >(LOGIN_MUTATION, { onCompleted });
+  const onSubmit = () => {
+    if (!loading) {
+      const { email, password } = getValues();
+      loginMutation({
+        variables: {
+          loginInput: {
+            email,
+            password,
+          },
+        },
+      });
+    }
+  };
   return (
     <div>
       <h1>Login page</h1>
-      <form>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <input ref={register()} name="email" type="email" placeholder="Email" />
         <input
           ref={register()}
