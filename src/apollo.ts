@@ -12,7 +12,7 @@ export const isLoggedInVar = makeVar(Boolean(token)); // false
 export const authTokenVar = makeVar(token); // null
 
 const httpLink = createHttpLink({
-  uri: "http://localhost:4000/graphql",
+  uri: "https://devgony-podcast-backend.herokuapp.com/graphql",
 });
 
 const authLink = setContext((_, { headers }) => {

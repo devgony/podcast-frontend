@@ -1,7 +1,7 @@
 {
-  "name": "react-typescript",
+  "name": "podcast-frontend",
   "version": "1.0.0",
-  "description": "React and TypeScript example starter project",
+  "description": "podcast frontend challenge",
   "keywords": [
     "typescript",
     "react",
