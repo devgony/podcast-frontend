@@ -62,18 +62,28 @@ export const Login = () => {
     }
   };
   return (
-    <div>
-      <h1>Login page</h1>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <input ref={register()} name="email" type="email" placeholder="Email" />
+    <div className="px-10 py-10 mt-20 mx-auto max-w-3xl">
+      <form
+        className="flex flex-col items-center justify-center bg-gray-300"
+        onSubmit={handleSubmit(onSubmit)}
+      >
+        <h1 className="text-3xl">Login Podcast</h1>
         <input
+          className="input"
+          ref={register()}
+          name="email"
+          type="email"
+          placeholder="Email"
+        />
+        <input
+          className="input"
           ref={register()}
           name="password"
           type="password"
           placeholder="Password"
           required
         />
-        <button>Login</button>
+        <button className="btn">Login</button>
       </form>
     </div>
   );

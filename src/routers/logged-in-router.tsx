@@ -1,30 +1,26 @@
-import {
-  BrowserRouter as Router,
-  useHistory,
-  Route,
-  Switch,
-} from "react-router-dom";
+import { authTokenVar, isLoggedInVar } from "../apollo";
 import { LOCALSTORAGE_TOKEN } from "../constants";
 
 export const LoggedInRouter = () => {
   return (
-    <Router>
-      <h1>Logged In</h1>
+    <div>
+      <h1 className="text-center">Logged In</h1>
       <Logout />
-    </Router>
+    </div>
   );
 };
 
 const Logout = () => {
-  const history = useHistory();
   const logout = () => {
     localStorage.setItem(LOCALSTORAGE_TOKEN, "");
-    window.location.reload();
-    // history.push("/");
+    authTokenVar("");
+    isLoggedInVar(false);
   };
   return (
-    <div>
-      <button onClick={logout}>Logout</button>
+    <div className="flex flex-col items-center">
+      <button className="btn" onClick={logout}>
+        Logout
+      </button>
     </div>
   );
 };
