@@ -12,6 +12,7 @@ import {
 } from "../__generated__/loginMutation";
 import { Link } from "react-router-dom";
 import { Button } from "../components/button";
+import { FormError } from "../components/form-error";
 
 export const LOGIN_MUTATION = gql`
   mutation loginMutation($loginInput: LoginInput!) {
@@ -66,7 +67,7 @@ export const Login = () => {
     }
   };
   return (
-    <div className="text-white flex flex-col justify-center items-center h-screen bg-gradient-to-b from-podGradStart to-podGradEnd">
+    <div className="flex flex-col justify-center items-center h-screen text-white bg-gradient-to-b from-podGradStart to-podGradEnd">
       <div className="w-full max-w-screen-sm flex flex-col items-center px-5">
         <img src={Logo} className="w-52 mb-4" alt="Podcast" />
         <h1 className="text-3xl mb-10">Podcloud</h1>
@@ -84,14 +85,26 @@ export const Login = () => {
             type="email"
             placeholder="Email"
           />
+          {errors.email?.message && (
+            <FormError errorMessage={errors.email?.message} />
+          )}
+          {errors.email?.type === "pattern" && (
+            <FormError errorMessage={"Please enter a valid email"} />
+          )}
           <input
             className="input"
-            ref={register({ required: "Password is required" })}
+            ref={register({ required: "Password is required", minLength: 4 })}
             name="password"
             type="password"
             placeholder="Password"
             required
           />
+          {errors.password?.message && (
+            <FormError errorMessage={errors.password?.message} />
+          )}
+          {errors.password?.type === "minLength" && (
+            <FormError errorMessage="Password must be more than 4 chars." />
+          )}
           <Button
             canClick={formState.isValid}
             loading={loading}

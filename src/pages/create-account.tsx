@@ -1,3 +1,4 @@
+import Logo from "../images/logo-white.png";
 import { useMutation } from "@apollo/client";
 import gql from "graphql-tag";
 import { useForm } from "react-hook-form";
@@ -7,6 +8,9 @@ import {
   createAccountMutationVariables,
 } from "../__generated__/createAccountMutation";
 import { UserRole } from "../__generated__/globalTypes";
+import { Button } from "../components/button";
+import { Link } from "react-router-dom";
+import { FormError } from "../components/form-error";
 
 interface ICreateAccountForm {
   email: string;
@@ -59,38 +63,71 @@ export const CreateAccount = () => {
     }
   };
   return (
-    <div>
-      <form
-        className="flex flex-col items-center justify-center bg-gray-300"
-        onSubmit={handleSubmit(onSubmit)}
-      >
-        <h1 className="text-3xl">Create Account</h1>
-        <input
-          className="input"
-          ref={register()}
-          name="email"
-          type="email"
-          placeholder="Email"
-        />
-        <input
-          className="input"
-          ref={register()}
-          name="password"
-          type="password"
-          placeholder="Password"
-          required
-        />
-        <select
-          name="role"
-          ref={register({ required: true })}
-          className="input"
+    <div className="flex flex-col justify-center items-center h-screen text-white bg-gradient-to-b from-podGradStart to-podGradEnd">
+      <div className="w-full max-w-screen-sm flex flex-col items-center px-5">
+        <img src={Logo} className="w-52 mb-4" alt="Podcast" />
+        <h1 className="text-3xl mb-10">Podcloud</h1>
+        <form
+          className="grid gap-3 mb-4 w-full"
+          onSubmit={handleSubmit(onSubmit)}
         >
-          {Object.keys(UserRole).map((role, index) => (
-            <option key={index}>{role}</option>
-          ))}
-        </select>
-        <button className="btn">Create Account</button>
-      </form>
+          <input
+            className="input"
+            ref={register({
+              required: "Email is required",
+              pattern: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+            })}
+            name="email"
+            type="email"
+            placeholder="Email"
+          />
+          {errors.email?.message && (
+            <FormError errorMessage={errors.email?.message} />
+          )}
+          {errors.email?.type === "pattern" && (
+            <FormError errorMessage={"Please enter a valid email"} />
+          )}
+          <input
+            className="input"
+            ref={register({ required: "Password is required", minLength: 4 })}
+            name="password"
+            type="password"
+            placeholder="Password"
+            required
+          />
+          {errors.password?.message && (
+            <FormError errorMessage={errors.password?.message} />
+          )}
+          {errors.password?.type === "minLength" && (
+            <FormError errorMessage="Password must be more than 4 chars." />
+          )}
+          <select
+            name="role"
+            ref={register({ required: true })}
+            className="input"
+          >
+            {Object.keys(UserRole).map((role, index) => (
+              <option key={index}>{role}</option>
+            ))}
+          </select>
+          <Button
+            canClick={formState.isValid}
+            loading={loading}
+            actionText="Create Account"
+          />
+          {createAccountMutationResult?.createAccount.error && (
+            <FormError
+              errorMessage={createAccountMutationResult.createAccount.error}
+            />
+          )}
+        </form>
+        <div className="text-black">
+          Already have an account?{" "}
+          <Link to="/" className="hover:underline text-white">
+            Log in now
+          </Link>
+        </div>
+      </div>
     </div>
   );
 };
