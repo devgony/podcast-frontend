@@ -67,34 +67,43 @@ export const Login = () => {
   };
   return (
     <div className="text-white flex flex-col justify-center items-center h-screen bg-gradient-to-b from-podGradStart to-podGradEnd">
-      <form
-        className="flex flex-col items-center justify-center mb-4 w-full"
-        onSubmit={handleSubmit(onSubmit)}
-      >
-        <img src={Logo} className="w-52 mb-10" alt="Podcast" />
+      <div className="w-full max-w-screen-sm flex flex-col items-center px-5">
+        <img src={Logo} className="w-52 mb-4" alt="Podcast" />
         <h1 className="text-3xl mb-10">Podcloud</h1>
-        <input
-          className="input"
-          ref={register()}
-          name="email"
-          type="email"
-          placeholder="Email"
-        />
-        <input
-          className="input mb-6"
-          ref={register()}
-          name="password"
-          type="password"
-          placeholder="Password"
-          required
-        />
-        <Button canClick={true} loading={false} actionText="Login" />
-      </form>
-      <div className="text-black">
-        New to Podcloud?{" "}
-        <Link to="/create-account" className="hover:underline text-white">
-          Create an Account
-        </Link>
+        <form
+          className="grid gap-3 mb-4 w-full"
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <input
+            className="input"
+            ref={register({
+              required: "Email is required",
+              pattern: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+            })}
+            name="email"
+            type="email"
+            placeholder="Email"
+          />
+          <input
+            className="input"
+            ref={register({ required: "Password is required" })}
+            name="password"
+            type="password"
+            placeholder="Password"
+            required
+          />
+          <Button
+            canClick={formState.isValid}
+            loading={loading}
+            actionText="Login"
+          />
+        </form>
+        <div className="text-black">
+          New to Podcloud?{" "}
+          <Link to="/create-account" className="hover:underline text-white">
+            Create an Account
+          </Link>
+        </div>
       </div>
     </div>
   );

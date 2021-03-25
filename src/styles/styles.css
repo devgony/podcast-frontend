@@ -605,7 +605,6 @@ video {
   border-width: 2px;
   font-size: 1.125rem;
   line-height: 1.75rem;
-  margin: 0.125rem;
 }
 
 .input:focus {
@@ -614,10 +613,7 @@ video {
 }
 
 .input {
-  padding-top: 0.75rem;
-  padding-bottom: 0.75rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
+  padding: 0.75rem;
   --tw-text-opacity: 1;
   color: rgba(107, 114, 128, var(--tw-text-opacity));
   transition-property: background-color, border-color, color, fill, stroke;
