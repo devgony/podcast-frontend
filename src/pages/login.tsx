@@ -1,13 +1,17 @@
+import Logo from "../images/logo-white.png";
 import { useMutation } from "@apollo/client";
 import gql from "graphql-tag";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { useHistory } from "react-router";
 import { authTokenVar, isLoggedInVar } from "../apollo";
 import { LOCALSTORAGE_TOKEN } from "../constants";
 import {
   loginMutation,
   loginMutationVariables,
 } from "../__generated__/loginMutation";
+import { Link } from "react-router-dom";
+import { Button } from "../components/button";
 
 export const LOGIN_MUTATION = gql`
   mutation loginMutation($loginInput: LoginInput!) {
@@ -62,12 +66,13 @@ export const Login = () => {
     }
   };
   return (
-    <div className="px-10 py-10 mt-20 mx-auto max-w-3xl">
+    <div className="text-white flex flex-col justify-center items-center h-screen bg-gradient-to-b from-podGradStart to-podGradEnd">
       <form
-        className="flex flex-col items-center justify-center bg-gray-300"
+        className="flex flex-col items-center justify-center mb-4 w-full"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <h1 className="text-3xl">Login Podcast</h1>
+        <img src={Logo} className="w-52 mb-10" alt="Podcast" />
+        <h1 className="text-3xl mb-10">Podcloud</h1>
         <input
           className="input"
           ref={register()}
@@ -76,15 +81,21 @@ export const Login = () => {
           placeholder="Email"
         />
         <input
-          className="input"
+          className="input mb-6"
           ref={register()}
           name="password"
           type="password"
           placeholder="Password"
           required
         />
-        <button className="btn">Login</button>
+        <Button canClick={true} loading={false} actionText="Login" />
       </form>
+      <div className="text-black">
+        New to Podcloud?{" "}
+        <Link to="/create-account" className="hover:underline text-white">
+          Create an Account
+        </Link>
+      </div>
     </div>
   );
 };

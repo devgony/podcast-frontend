@@ -1,11 +1,11 @@
 @tailwind base;
 @tailwind components;
 .btn {
-  @apply px-4 py-2 bg-yellow-500 text-white rounded;
+  @apply px-8 py-2 text-podOrange bg-white rounded;
 }
 
 .input {
-  @apply focus:outline-none focus:border-gray-500 p-3 border-2  text-lg border-gray-200 transition-colors;
+  @apply focus:outline-none focus:border-gray-500 px-4 py-3 m-0.5 text-gray-500 border-2  text-lg border-gray-200 transition-colors;
 }
 
 @tailwind utilities;

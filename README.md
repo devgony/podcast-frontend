@@ -10,11 +10,18 @@
 - Log the user in and save the token!
 ```
 
+## ✅ D-25-Create Account & UI
+
+```
+- Make the 'Create Account' page, this includes the route, the mutations, the form, everything!
+- 'Login' and 'Create Account' page as beautiful as possible.
+```
+
 ## 📝 Note
 
 ### D-22-Welcome to Frontend!!
 
-- react-scripts error: change below all upgrade react-scripts from 4.0.0 to `4.0.3`
+- react-scripts error: upgrade react-scripts from 4.0.0 to `4.0.3`
 
 ```
 // node_modules/react-scripts/scripts/utils/verifyTypeScriptSetup.js
