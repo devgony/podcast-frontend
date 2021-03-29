@@ -18,6 +18,14 @@ export interface CreateAccountInput {
   role: UserRole;
 }
 
+export interface GetEpisodesInput {
+  podcastId: number;
+}
+
+export interface GetPodcastInput {
+  id: number;
+}
+
 export interface LoginInput {
   email: string;
   password: string;

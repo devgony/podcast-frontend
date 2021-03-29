@@ -11,6 +11,7 @@ import { UserRole } from "../__generated__/globalTypes";
 import { Button } from "../components/button";
 import { Link } from "react-router-dom";
 import { FormError } from "../components/form-error";
+import { Helmet } from "react-helmet-async";
 
 interface ICreateAccountForm {
   email: string;
@@ -64,6 +65,9 @@ export const CreateAccount = () => {
   };
   return (
     <div className="flex flex-col justify-center items-center h-screen text-white bg-gradient-to-b from-podGradStart to-podGradEnd">
+      <Helmet>
+        <title>Create Account | Podcloud</title>
+      </Helmet>
       <div className="w-full max-w-screen-sm flex flex-col items-center px-5">
         <img src={Logo} className="w-52 mb-4" alt="Podcast" />
         <h1 className="text-3xl mb-10">Podcloud</h1>

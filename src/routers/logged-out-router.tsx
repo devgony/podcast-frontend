@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { NotFound } from "../pages/404";
 import { CreateAccount } from "../pages/create-account";
 import { Login } from "../pages/login";
 
@@ -11,6 +12,9 @@ export const LoggedOutRouter = () => {
         </Route>
         <Route path="/create-account" exact>
           <CreateAccount />
+        </Route>
+        <Route>
+          <NotFound />
         </Route>
       </Switch>
     </Router>

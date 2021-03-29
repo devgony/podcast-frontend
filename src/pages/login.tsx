@@ -13,6 +13,7 @@ import {
 import { Link } from "react-router-dom";
 import { Button } from "../components/button";
 import { FormError } from "../components/form-error";
+import { Helmet } from "react-helmet-async";
 
 export const LOGIN_MUTATION = gql`
   mutation loginMutation($loginInput: LoginInput!) {
@@ -68,6 +69,9 @@ export const Login = () => {
   };
   return (
     <div className="flex flex-col justify-center items-center h-screen text-white bg-gradient-to-b from-podGradStart to-podGradEnd">
+      <Helmet>
+        <title>Login | Podcloud</title>
+      </Helmet>
       <div className="w-full max-w-screen-sm flex flex-col items-center px-5">
         <img src={Logo} className="w-52 mb-4" alt="Podcast" />
         <h1 className="text-3xl mb-10">Podcloud</h1>

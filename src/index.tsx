@@ -3,11 +3,14 @@ import { render } from "react-dom";
 import { client } from "./apollo";
 import "./styles/styles.css";
 import App from "./App";
+import { HelmetProvider } from "react-helmet-async";
 
 const rootElement = document.getElementById("root");
 render(
   <ApolloProvider client={client}>
-    <App />
+    <HelmetProvider>
+      <App />
+    </HelmetProvider>
   </ApolloProvider>,
   rootElement
 );
