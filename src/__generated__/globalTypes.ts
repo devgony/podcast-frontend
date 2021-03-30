@@ -26,6 +26,10 @@ export interface GetPodcastInput {
   id: number;
 }
 
+export interface GetPodcastsByCategoryInput {
+  category: string;
+}
+
 export interface LoginInput {
   email: string;
   password: string;

@@ -1,3 +1,4 @@
+const podOrange = "#FF5500";
 module.exports = {
   purge: ["./src/**/*.tsx"],
   darkMode: false, // or 'media' or 'class'
@@ -5,7 +6,7 @@ module.exports = {
     extend: {},
   },
   variants: {
-    extend: {},
+    extend: { display: ["hover", "group-hover"], borderColor: ["hover"] },
   },
   plugins: [],
   theme: {
@@ -16,11 +17,15 @@ module.exports = {
     }),
     textColor: (theme) => ({
       ...theme("colors"),
-      podOrange: "#FF5500",
+      podOrange,
     }),
     backgroundColor: (theme) => ({
       ...theme("colors"),
-      podOrange: "#FF5500",
+      podOrange,
+    }),
+    borderColor: (theme) => ({
+      ...theme("colors"),
+      podOrange,
     }),
   },
 };

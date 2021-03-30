@@ -9,10 +9,10 @@ import { Podcast } from "../pages/podcast";
 export const LoggedInRouter = () => {
   return (
     <div>
-      <NavBar />
-      <div className="bg-gray-200 min-h-screen">
-        <div className="bg-white max-w-screen-lg m-auto min-h-screen">
-          <Router>
+      <Router>
+        <NavBar />
+        <div className="bg-gray-200 min-h-screen">
+          <div className="bg-white max-w-screen-lg mx-auto min-h-screen">
             <Switch>
               <Route path="/" exact>
                 <Home />
@@ -24,25 +24,9 @@ export const LoggedInRouter = () => {
                 <NotFound />
               </Route>
             </Switch>
-          </Router>
+          </div>
         </div>
-      </div>
-      <Logout />
-    </div>
-  );
-};
-
-const Logout = () => {
-  const logout = () => {
-    localStorage.setItem(LOCALSTORAGE_TOKEN, "");
-    authTokenVar("");
-    isLoggedInVar(false);
-  };
-  return (
-    <div className="flex flex-col items-center">
-      <button className="btn" onClick={logout}>
-        Logout
-      </button>
+      </Router>
     </div>
   );
 };

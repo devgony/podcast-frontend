@@ -24,6 +24,7 @@ const GET_PODCAST = gql`
         category
         rating
         image
+        intro
       }
     }
   }
@@ -56,13 +57,50 @@ export const Podcast = () => {
     variables: { input: { id: +params.id } },
   });
   return (
-    <div className="px-6">
+    <div className="px-6 pt-4">
       {!podcastLoading && (
         <div className="flex justify-between items-center">
-          <div>
-            <h1>{podcastData?.getPodcast.podcast?.title}</h1>
-            <h2>{podcastData?.getPodcast.podcast?.category}</h2>
-            <h3>rating: {podcastData?.getPodcast.podcast?.rating}</h3>
+          <div className="">
+            <h1 className="text-xl">
+              {podcastData?.getPodcast.podcast?.title}
+            </h1>
+            <h2 className="text-sm text-gray-400">
+              {podcastData?.getPodcast.podcast?.category}
+            </h2>
+            <h3 className="text-sm mb-4">
+              rating: {podcastData?.getPodcast.podcast?.rating}
+            </h3>
+            <div className="flex mb-4">
+              <button className="border border-gray-300 rounded-full hover:border-podOrange cursor-pointer px-2 flex items-center mr-1">
+                <svg
+                  className="w-4"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                Subscribe
+              </button>
+              <button className="border border-gray-300 rounded-full hover:border-podOrange cursor-pointer px-2 flex items-center">
+                <svg
+                  className="w-4"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z" />
+                </svg>
+                Share
+              </button>
+            </div>
+            <h4 className="text-sm mt-1">
+              {podcastData?.getPodcast.podcast?.intro}
+            </h4>
           </div>
           <div
             className="bg-cover bg-center p-20 m-2 mr-8 "

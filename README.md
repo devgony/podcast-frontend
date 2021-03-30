@@ -17,6 +17,24 @@
 - 'Login' and 'Create Account' page as beautiful as possible.
 ```
 
+## ✅ D-30-Podcasts & Podcast Detail
+
+- after the user logs in, the user will go to 'Home', there it can see all the podcasts in a nice list!
+
+## 🚀 Next To do
+
+- upload & listen audio at each episodes
+- change favicon
+- useQuery => useLazyQuery fetch podcasts by all categories
+- `Backend`: create getCategories => or just filter by categories at frontend?
+- Subscribe & share
+- Subscribed page to Libarary
+- rating bar
+- search podcasts
+- upload podcast
+- comment on podcast
+- if others comment on my podcast => alert
+
 ## 📝 Note
 
 ### D-22-Welcome to Frontend!!

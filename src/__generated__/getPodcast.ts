@@ -15,6 +15,7 @@ export interface getPodcast_getPodcast_podcast {
   category: string;
   rating: number;
   image: string | null;
+  intro: string | null;
 }
 
 export interface getPodcast_getPodcast {
