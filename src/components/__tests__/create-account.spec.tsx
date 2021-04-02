@@ -101,7 +101,7 @@ describe("<CreateAccount />", () => {
     expect(window.alert).toHaveBeenCalledWith("Account Created! Log in now!");
     expect(mockPush).toHaveBeenCalledWith("/");
     const mutationError = getByRole("alert");
-    // expect(mutationError).toHaveTextContent("mutation-error");
+    expect(mutationError).toHaveTextContent("mutation-error");
   });
   afterAll(() => {
     jest.clearAllMocks();

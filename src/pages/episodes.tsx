@@ -9,12 +9,13 @@ import {
 import { getPodcast, getPodcastVariables } from "../__generated__/getPodcast";
 import { getPodcasts } from "../__generated__/getPodcasts";
 import { GetPodcastInput } from "../__generated__/globalTypes";
+import { Helmet } from "react-helmet-async";
 
 interface IPodcastParams {
   id: string;
 }
 
-const GET_PODCAST = gql`
+export const GET_PODCAST = gql`
   query getPodcast($input: GetPodcastInput!) {
     getPodcast(input: $input) {
       ok
@@ -30,7 +31,7 @@ const GET_PODCAST = gql`
   }
 `;
 
-const GET_EPISODES = gql`
+export const GET_EPISODES = gql`
   query getEpisodes($input: GetEpisodesInput!) {
     getEpisodes(input: $input) {
       ok
@@ -46,18 +47,21 @@ const GET_EPISODES = gql`
 
 export const Episodes = () => {
   const params = useParams<IPodcastParams>();
-  const { data: episodesData, loading: episodesLoading } = useQuery<
-    getEpisodes,
-    getEpisodesVariables
-  >(GET_EPISODES, { variables: { input: { podcastId: +params.id } } });
   const { data: podcastData, loading: podcastLoading } = useQuery<
     getPodcast,
     getPodcastVariables
   >(GET_PODCAST, {
-    variables: { input: { id: +params.id } },
+    variables: { input: { id: 1 } },
   });
+  const { data: episodesData, loading: episodesLoading, error } = useQuery<
+    getEpisodes,
+    getEpisodesVariables
+  >(GET_EPISODES, { variables: { input: { podcastId: +params.id } } });
   return (
     <div className="px-6 pt-4">
+      <Helmet>
+        <title>Episodes | Podcloud</title>
+      </Helmet>
       {!podcastLoading && (
         <div className="flex justify-between items-center">
           <div className="">

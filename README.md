@@ -21,6 +21,11 @@
 
 - after the user logs in, the user will go to 'Home', there it can see all the podcasts in a nice list!
 
+## ✅ D-32-UI Testing Time!
+
+- coverage to 100% (or as much as possible)
+- eg) episodes.spec.tsx, podcasts.spec.tsx, login.spec.tsx and create-account.spec.tsx
+
 ## 🚀 Next To do
 
 - upload & listen audio at each episodes

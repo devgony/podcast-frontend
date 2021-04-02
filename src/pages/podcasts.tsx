@@ -12,7 +12,7 @@ import {
   getPodcastsByCategoryVariables,
 } from "../__generated__/getPodcastsByCategory";
 
-const GET_PODCASTS = gql`
+export const GET_PODCASTS = gql`
   query getPodcasts {
     getPodcasts {
       ok
@@ -28,7 +28,7 @@ const GET_PODCASTS = gql`
   }
 `;
 
-const GET_PODCASTS_BY_CATEGORY = gql`
+export const GET_PODCASTS_BY_CATEGORY = gql`
   query getPodcastsByCategory($input: GetPodcastsByCategoryInput!) {
     getPodcastsByCategory(input: $input) {
       ok
@@ -45,8 +45,8 @@ const GET_PODCASTS_BY_CATEGORY = gql`
 `;
 
 export const Podcasts = () => {
-  const { data, loading, error } = useQuery<getPodcasts>(GET_PODCASTS);
-  const { data: dataByCategory, loading: loadingByCategory } = useQuery<
+  const { data, loading } = useQuery<getPodcasts>(GET_PODCASTS);
+  const { data: dataByCategory, loading: loadingByCategory, error } = useQuery<
     getPodcastsByCategory,
     getPodcastsByCategoryVariables
   >(GET_PODCASTS_BY_CATEGORY, {
@@ -75,49 +75,69 @@ export const Podcasts = () => {
       items: 1,
     },
   };
+  // console.log(`loading:${loading}`, data);
+  // console.log(dataByCategory, error);
   return (
     <div className="pt-6 px-2">
       <Helmet>
-        <title>Home | Podcloud</title>
+        <title>Podcasts | Podcloud</title>
       </Helmet>
       <h1 className="text-xl">Podcast: New & Hot</h1>
       <p className="text-sm text-gray-400">
         Up-and-coming podcasts on Podcloud
       </p>
-      {/* <div className="grid grid-cols-3 gap-2"> */}
-      <Carousel responsive={responsive}>
+      {/* <div>
         {!loading &&
           data?.getPodcasts.podcasts.map((podcast) => (
-            <div key={podcast.id} className="text-center">
-              <Link to={`/podcast/${podcast.id}`}>
-                <div
-                  className="bg-no-repeat bg-center mb-2 p-32"
-                  style={{ backgroundImage: `url(${podcast.image})` }}
-                ></div>
-                <h1>{podcast.title}</h1>
-                <p className="text-sm text-gray-400">{podcast.category}</p>
-              </Link>
-            </div>
+            <div key={podcast.id}>{podcast.title}</div>
           ))}
-      </Carousel>
+      </div> */}
+      {/* <div className="grid grid-cols-3 gap-2"> */}
+      {loading ? (
+        <h1 className="text-podOrange my-5">Loading data...</h1>
+      ) : data?.getPodcasts.podcasts.length ? (
+        <Carousel responsive={responsive}>
+          {!loading &&
+            data?.getPodcasts.podcasts.map((podcast) => (
+              <div key={podcast.id} className="text-center">
+                <Link to={`/podcast/${podcast.id}`}>
+                  <div
+                    className="bg-no-repeat bg-center mb-2 p-32"
+                    style={{ backgroundImage: `url(${podcast.image})` }}
+                  ></div>
+                  <h1>{podcast.title}</h1>
+                  <p className="text-sm text-gray-400">{podcast.category}</p>
+                </Link>
+              </div>
+            ))}
+        </Carousel>
+      ) : (
+        <h1 className="text-podOrange my-5">No Podcast yet...</h1>
+      )}
       {/* </div> */}
       <h1 className="text-xl">Education</h1>
       <p className="text-sm text-gray-400">Education podcasts on Podcloud</p>
-      <Carousel responsive={responsive}>
-        {!loadingByCategory &&
-          dataByCategory?.getPodcastsByCategory.podcasts.map((podcast) => (
-            <div key={podcast.id} className="text-center">
-              <Link to={`/podcast/${podcast.id}`}>
-                <div
-                  className="bg-no-repeat bg-center mb-2 p-32"
-                  style={{ backgroundImage: `url(${podcast.image})` }}
-                ></div>
-                <h1>{podcast.title}</h1>
-                <p className="text-sm text-gray-400">{podcast.category}</p>
-              </Link>
-            </div>
-          ))}
-      </Carousel>
+      {loading ? (
+        <h1 className="text-podOrange my-5">Loading data...</h1>
+      ) : dataByCategory?.getPodcastsByCategory.podcasts.length ? (
+        <Carousel responsive={responsive}>
+          {!loadingByCategory &&
+            dataByCategory?.getPodcastsByCategory.podcasts.map((podcast) => (
+              <div key={podcast.id} className="text-center">
+                <Link to={`/podcast/${podcast.id}`}>
+                  <div
+                    className="bg-no-repeat bg-center mb-2 p-32"
+                    style={{ backgroundImage: `url(${podcast.image})` }}
+                  ></div>
+                  <h1>{podcast.title}</h1>
+                  <p className="text-sm text-gray-400">{podcast.category}</p>
+                </Link>
+              </div>
+            ))}
+        </Carousel>
+      ) : (
+        <h1 className="text-podOrange my-5">No Podcast yet...</h1>
+      )}
     </div>
   );
 };

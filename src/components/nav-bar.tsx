@@ -4,7 +4,6 @@ import { Link, useHistory } from "react-router-dom";
 import { authTokenVar, isLoggedInVar } from "../apollo";
 import { LOCALSTORAGE_TOKEN } from "../constants";
 import Logo from "../images/logo-white.png";
-import { Dropdown } from "./dropdown";
 
 interface IFormProps {
   searchTerm: string;
@@ -15,6 +14,7 @@ export const NavBar = () => {
   const [isMenuOpened, setIsMenuOpened] = useState(false);
   const history = useHistory();
   const logout = () => {
+    setIsMenuOpened(false);
     localStorage.setItem(LOCALSTORAGE_TOKEN, "");
     authTokenVar("");
     isLoggedInVar(false);
@@ -66,6 +66,7 @@ export const NavBar = () => {
           <div className="flex justify-center items-center w-12 ">🔔</div>
           <div className="flex justify-center items-center w-12 ">
             <svg
+              role="menu"
               onClick={() => {
                 setIsMenuOpened((prev) => !prev);
               }}
@@ -89,6 +90,7 @@ export const NavBar = () => {
             } absolute top-11 bg-gray-700 w-full text-center h-20 flex flex-col justify-around`}
           >
             <Link
+              role="edit-profile"
               to="edit-profile"
               onClick={() => {
                 setIsMenuOpened((prev) => !prev);
@@ -97,7 +99,11 @@ export const NavBar = () => {
             >
               Edit Profile
             </Link>
-            <div onClick={logout} className="hover:text-white cursor-pointer">
+            <div
+              role="logout"
+              onClick={logout}
+              className="hover:text-white cursor-pointer"
+            >
               Logout
             </div>
           </div>

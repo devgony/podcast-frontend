@@ -1,19 +1,16 @@
 import Logo from "../images/logo-white.png";
-import { useMutation } from "@apollo/client";
-import gql from "graphql-tag";
-import { useEffect } from "react";
+import { Helmet } from "react-helmet-async";
+import { gql, useMutation } from "@apollo/client";
 import { useForm } from "react-hook-form";
-import { useHistory } from "react-router";
+import { Link } from "react-router-dom";
+import { Button } from "../components/button";
+import { FormError } from "../components/form-error";
 import { authTokenVar, isLoggedInVar } from "../apollo";
 import { LOCALSTORAGE_TOKEN } from "../constants";
 import {
   loginMutation,
   loginMutationVariables,
 } from "../__generated__/loginMutation";
-import { Link } from "react-router-dom";
-import { Button } from "../components/button";
-import { FormError } from "../components/form-error";
-import { Helmet } from "react-helmet-async";
 
 export const LOGIN_MUTATION = gql`
   mutation loginMutation($loginInput: LoginInput!) {
@@ -34,16 +31,14 @@ export const Login = () => {
   const {
     register,
     getValues,
-    watch,
     errors,
     handleSubmit,
     formState,
   } = useForm<ILoginForm>({ mode: "onChange" });
   const onCompleted = (data: loginMutation) => {
     const {
-      login: { ok, token, error },
+      login: { ok, token },
     } = data;
-    console.log(ok, error);
     if (ok && token) {
       localStorage.setItem(LOCALSTORAGE_TOKEN, token);
       authTokenVar(token);
@@ -88,6 +83,7 @@ export const Login = () => {
             name="email"
             type="email"
             placeholder="Email"
+            required
           />
           {errors.email?.message && (
             <FormError errorMessage={errors.email?.message} />
@@ -115,6 +111,9 @@ export const Login = () => {
             actionText="Login"
           />
         </form>
+        {loginMutationResult?.login.error && (
+          <FormError errorMessage={loginMutationResult.login.error} />
+        )}
         <div className="text-black">
           New to Podcloud?{" "}
           <Link to="/create-account" className="hover:underline text-white">
