@@ -44,7 +44,7 @@ const GET_PODCASTS_BY_CATEGORY = gql`
   }
 `;
 
-export const Home = () => {
+export const Podcasts = () => {
   const { data, loading, error } = useQuery<getPodcasts>(GET_PODCASTS);
   const { data: dataByCategory, loading: loadingByCategory } = useQuery<
     getPodcastsByCategory,

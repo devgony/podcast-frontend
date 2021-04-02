@@ -3,8 +3,8 @@ import { authTokenVar, isLoggedInVar } from "../apollo";
 import { NavBar } from "../components/nav-bar";
 import { LOCALSTORAGE_TOKEN } from "../constants";
 import { NotFound } from "../pages/404";
-import { Home } from "../pages/home";
-import { Podcast } from "../pages/podcast";
+import { Podcasts } from "../pages/podcasts";
+import { Episodes } from "../pages/episodes";
 
 export const LoggedInRouter = () => {
   return (
@@ -15,10 +15,10 @@ export const LoggedInRouter = () => {
           <div className="bg-white max-w-screen-lg mx-auto min-h-screen">
             <Switch>
               <Route path="/" exact>
-                <Home />
+                <Podcasts />
               </Route>
               <Route path="/podcast/:id" exact>
-                <Podcast />
+                <Episodes />
               </Route>
               <Route>
                 <NotFound />

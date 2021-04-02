@@ -3,7 +3,7 @@ import { render } from "react-dom";
 import { client } from "./apollo";
 import "./styles/styles.css";
 import "react-multi-carousel/lib/styles.css";
-import App from "./App";
+import App from "./components/app";
 import { HelmetProvider } from "react-helmet-async";
 
 const rootElement = document.getElementById("root");

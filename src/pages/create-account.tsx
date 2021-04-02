@@ -19,7 +19,7 @@ interface ICreateAccountForm {
   role: UserRole;
 }
 
-const CREATE_ACCOUNT_MUTATION = gql`
+export const CREATE_ACCOUNT_MUTATION = gql`
   mutation createAccountMutation($createAccountInput: CreateAccountInput!) {
     createAccount(input: $createAccountInput) {
       ok
@@ -36,7 +36,12 @@ export const CreateAccount = () => {
     errors,
     handleSubmit,
     formState,
-  } = useForm<ICreateAccountForm>({ mode: "onChange" });
+  } = useForm<ICreateAccountForm>({
+    mode: "onChange",
+    defaultValues: {
+      role: UserRole.Listener,
+    },
+  });
   const onCompleted = (data: createAccountMutation) => {
     const {
       createAccount: { ok },
@@ -84,6 +89,7 @@ export const CreateAccount = () => {
             name="email"
             type="email"
             placeholder="Email"
+            required
           />
           {errors.email?.message && (
             <FormError errorMessage={errors.email?.message} />

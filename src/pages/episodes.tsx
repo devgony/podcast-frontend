@@ -44,7 +44,7 @@ const GET_EPISODES = gql`
   }
 `;
 
-export const Podcast = () => {
+export const Episodes = () => {
   const params = useParams<IPodcastParams>();
   const { data: episodesData, loading: episodesLoading } = useQuery<
     getEpisodes,
