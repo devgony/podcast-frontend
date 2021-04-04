@@ -42,6 +42,7 @@
     "tailwind:build": "tailwind build ./src/styles/tailwind.css -o ./src/styles/styles.css",
     "apollo:codegen": "rimraf src/__generated__ && apollo client:codegen src/__generated__ --target=typescript --outputFlat",
     "start": "npm run apollo:codegen & npm run tailwind:build & react-scripts start",
+    "start:production": "NODE_ENV=production npm run apollo:codegen & npm run tailwind:build & react-scripts start",
     "build": "CI=false react-scripts build",
     "prebuild": "npm run tailwind:prodbuild",
     "test": "react-scripts test",

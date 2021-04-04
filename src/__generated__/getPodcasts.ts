@@ -7,11 +7,16 @@
 // GraphQL query operation: getPodcasts
 // ====================================================
 
+export interface getPodcasts_getPodcasts_podcasts_category {
+  __typename: "Category";
+  name: string;
+}
+
 export interface getPodcasts_getPodcasts_podcasts {
   __typename: "Podcast";
   id: number;
   title: string;
-  category: string;
+  category: getPodcasts_getPodcasts_podcasts_category | null;
   rating: number;
   image: string | null;
 }

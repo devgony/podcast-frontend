@@ -27,7 +27,7 @@ export interface GetPodcastInput {
 }
 
 export interface GetPodcastsByCategoryInput {
-  category: string;
+  slug: string;
 }
 
 export interface LoginInput {

@@ -28,6 +28,8 @@
 
 ## 🚀 Next To do
 
+- create all pages
+
 - upload & listen audio at each episodes
 - change favicon
 - useQuery => useLazyQuery fetch podcasts by all categories

@@ -20,7 +20,9 @@ export const GET_PODCASTS = gql`
       podcasts {
         id
         title
-        category
+        category {
+          name
+        }
         rating
         image
       }
@@ -36,7 +38,9 @@ export const GET_PODCASTS_BY_CATEGORY = gql`
       podcasts {
         id
         title
-        category
+        category {
+          name
+        }
         rating
         image
       }
@@ -52,7 +56,7 @@ export const Podcasts = () => {
   >(GET_PODCASTS_BY_CATEGORY, {
     variables: {
       input: {
-        category: "Education",
+        slug: "testcategory",
       },
     },
   });
@@ -76,7 +80,7 @@ export const Podcasts = () => {
     },
   };
   // console.log(`loading:${loading}`, data);
-  // console.log(dataByCategory, error);
+  console.log(dataByCategory, error);
   return (
     <div className="pt-6 px-2">
       <Helmet>
@@ -106,7 +110,9 @@ export const Podcasts = () => {
                     style={{ backgroundImage: `url(${podcast.image})` }}
                   ></div>
                   <h1>{podcast.title}</h1>
-                  <p className="text-sm text-gray-400">{podcast.category}</p>
+                  <p className="text-sm text-gray-400">
+                    {podcast.category?.name}
+                  </p>
                 </Link>
               </div>
             ))}
@@ -119,7 +125,7 @@ export const Podcasts = () => {
       <p className="text-sm text-gray-400">Education podcasts on Podcloud</p>
       {loading ? (
         <h1 className="text-podOrange my-5">Loading data...</h1>
-      ) : dataByCategory?.getPodcastsByCategory.podcasts.length ? (
+      ) : dataByCategory?.getPodcastsByCategory.podcasts?.length ? (
         <Carousel responsive={responsive}>
           {!loadingByCategory &&
             dataByCategory?.getPodcastsByCategory.podcasts.map((podcast) => (
@@ -130,7 +136,9 @@ export const Podcasts = () => {
                     style={{ backgroundImage: `url(${podcast.image})` }}
                   ></div>
                   <h1>{podcast.title}</h1>
-                  <p className="text-sm text-gray-400">{podcast.category}</p>
+                  <p className="text-sm text-gray-400">
+                    {podcast.category?.name}
+                  </p>
                 </Link>
               </div>
             ))}

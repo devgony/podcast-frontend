@@ -22,7 +22,9 @@ export const GET_PODCAST = gql`
       error
       podcast {
         title
-        category
+        category {
+          name
+        }
         rating
         image
         intro
@@ -69,7 +71,7 @@ export const Episodes = () => {
               {podcastData?.getPodcast.podcast?.title}
             </h1>
             <h2 className="text-sm text-gray-400">
-              {podcastData?.getPodcast.podcast?.category}
+              {podcastData?.getPodcast.podcast?.category?.name}
             </h2>
             <h3 className="text-sm mb-4">
               rating: {podcastData?.getPodcast.podcast?.rating}

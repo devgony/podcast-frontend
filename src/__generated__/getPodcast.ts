@@ -9,10 +9,15 @@ import { GetPodcastInput } from "./globalTypes";
 // GraphQL query operation: getPodcast
 // ====================================================
 
+export interface getPodcast_getPodcast_podcast_category {
+  __typename: "Category";
+  name: string;
+}
+
 export interface getPodcast_getPodcast_podcast {
   __typename: "Podcast";
   title: string;
-  category: string;
+  category: getPodcast_getPodcast_podcast_category | null;
   rating: number;
   image: string | null;
   intro: string | null;

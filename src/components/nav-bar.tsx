@@ -36,7 +36,7 @@ export const NavBar = () => {
           Home
         </Link>
         <Link
-          to="/category"
+          to="/categories"
           className="hover:text-white flex justify-center items-center w-24 border-l border-r border-black"
         >
           Category
