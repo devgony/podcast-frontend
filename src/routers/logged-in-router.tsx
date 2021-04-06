@@ -6,6 +6,7 @@ import { NotFound } from "../pages/404";
 import { Podcasts } from "../pages/podcasts";
 import { Episodes } from "../pages/episodes";
 import { Categories } from "../pages/categories";
+import { Category } from "../pages/category";
 
 export const LoggedInRouter = () => {
   return (
@@ -23,6 +24,9 @@ export const LoggedInRouter = () => {
               </Route>
               <Route path="/categories" exact>
                 <Categories />
+              </Route>
+              <Route path="/category/:slug" exact>
+                <Category />
               </Route>
               <Route>
                 <NotFound />

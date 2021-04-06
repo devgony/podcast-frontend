@@ -11,6 +11,7 @@ import {
   getPodcastsByCategory,
   getPodcastsByCategoryVariables,
 } from "../__generated__/getPodcastsByCategory";
+import { CarouselLine } from "../components/carousel-line";
 
 export const GET_PODCASTS = gql`
   query getPodcasts {
@@ -48,39 +49,59 @@ export const GET_PODCASTS_BY_CATEGORY = gql`
   }
 `;
 
+export const useQueryWith = (slug: string) =>
+  useQuery<getPodcastsByCategory, getPodcastsByCategoryVariables>(
+    GET_PODCASTS_BY_CATEGORY,
+    {
+      variables: {
+        input: {
+          slug,
+        },
+      },
+    }
+  );
+
+const responsive = {
+  superLargeDesktop: {
+    // the naming can be any, depends on you.
+    breakpoint: { max: 4000, min: 3000 },
+    items: 5,
+  },
+  desktop: {
+    breakpoint: { max: 3000, min: 1024 },
+    items: 4,
+  },
+  tablet: {
+    breakpoint: { max: 1024, min: 464 },
+    items: 3,
+  },
+  mobile: {
+    breakpoint: { max: 464, min: 0 },
+    items: 1,
+  },
+};
+
+const categories = [
+  { slug: "news", name: "NEWS" },
+  { slug: "education", name: "EDUCATION" },
+  { slug: "business", name: "BUSINESS" },
+  { slug: "health-&-fitness", name: "HEALTH & FITNESS" },
+  { slug: "comedy", name: "COMEDY" },
+];
+
+const Map = ({ slug, name }: { slug: string; name: string }) => {
+  const { loading, data } = useQueryWith(slug);
+  return { loading, data, name };
+};
+
 export const Podcasts = () => {
   const { data, loading } = useQuery<getPodcasts>(GET_PODCASTS);
-  const { data: dataByCategory, loading: loadingByCategory, error } = useQuery<
-    getPodcastsByCategory,
-    getPodcastsByCategoryVariables
-  >(GET_PODCASTS_BY_CATEGORY, {
-    variables: {
-      input: {
-        slug: "testcategory",
-      },
-    },
-  });
-  const responsive = {
-    superLargeDesktop: {
-      // the naming can be any, depends on you.
-      breakpoint: { max: 4000, min: 3000 },
-      items: 5,
-    },
-    desktop: {
-      breakpoint: { max: 3000, min: 1024 },
-      items: 4,
-    },
-    tablet: {
-      breakpoint: { max: 1024, min: 464 },
-      items: 3,
-    },
-    mobile: {
-      breakpoint: { max: 464, min: 0 },
-      items: 1,
-    },
-  };
-  // console.log(`loading:${loading}`, data);
-  console.log(dataByCategory, error);
+  const {
+    data: dataByCategory,
+    loading: loadingByCategory,
+    error,
+  } = useQueryWith("news");
+  const categoryRenderers = categories.map((category) => Map(category));
   return (
     <div className="pt-6 px-2">
       <Helmet>
@@ -90,62 +111,26 @@ export const Podcasts = () => {
       <p className="text-sm text-gray-400">
         Up-and-coming podcasts on Podcloud
       </p>
-      {/* <div>
-        {!loading &&
-          data?.getPodcasts.podcasts.map((podcast) => (
-            <div key={podcast.id}>{podcast.title}</div>
-          ))}
-      </div> */}
-      {/* <div className="grid grid-cols-3 gap-2"> */}
-      {loading ? (
-        <h1 className="text-podOrange my-5">Loading data...</h1>
-      ) : data?.getPodcasts.podcasts.length ? (
-        <Carousel responsive={responsive}>
-          {!loading &&
-            data?.getPodcasts.podcasts.map((podcast) => (
-              <div key={podcast.id} className="text-center">
-                <Link to={`/podcast/${podcast.id}`}>
-                  <div
-                    className="bg-no-repeat bg-center mb-2 p-32"
-                    style={{ backgroundImage: `url(${podcast.image})` }}
-                  ></div>
-                  <h1>{podcast.title}</h1>
-                  <p className="text-sm text-gray-400">
-                    {podcast.category?.name}
-                  </p>
-                </Link>
-              </div>
-            ))}
-        </Carousel>
-      ) : (
-        <h1 className="text-podOrange my-5">No Podcast yet...</h1>
-      )}
-      {/* </div> */}
-      <h1 className="text-xl">Education</h1>
+      <CarouselLine loading={loading} podcasts={data?.getPodcasts.podcasts} />
+
+      {/* <h1 className="text-xl">Education</h1>
       <p className="text-sm text-gray-400">Education podcasts on Podcloud</p>
-      {loading ? (
-        <h1 className="text-podOrange my-5">Loading data...</h1>
-      ) : dataByCategory?.getPodcastsByCategory.podcasts?.length ? (
-        <Carousel responsive={responsive}>
-          {!loadingByCategory &&
-            dataByCategory?.getPodcastsByCategory.podcasts.map((podcast) => (
-              <div key={podcast.id} className="text-center">
-                <Link to={`/podcast/${podcast.id}`}>
-                  <div
-                    className="bg-no-repeat bg-center mb-2 p-32"
-                    style={{ backgroundImage: `url(${podcast.image})` }}
-                  ></div>
-                  <h1>{podcast.title}</h1>
-                  <p className="text-sm text-gray-400">
-                    {podcast.category?.name}
-                  </p>
-                </Link>
-              </div>
-            ))}
-        </Carousel>
-      ) : (
-        <h1 className="text-podOrange my-5">No Podcast yet...</h1>
-      )}
+      <CarouselLine
+        loading={loadingByCategory}
+        podcasts={dataByCategory?.getPodcastsByCategory.podcasts}
+      /> */}
+      {categoryRenderers.map((category) => (
+        <div key={category.name} className="py-4">
+          <h1 className="text-xl">{category.name}</h1>
+          <p className="text-sm text-gray-400">
+            {category.name} podcasts on Podcloud
+          </p>
+          <CarouselLine
+            loading={category.loading}
+            podcasts={category.data?.getPodcastsByCategory.podcasts}
+          />
+        </div>
+      ))}
     </div>
   );
 };
