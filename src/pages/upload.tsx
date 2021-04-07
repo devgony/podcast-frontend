@@ -90,7 +90,7 @@ export const Upload = () => {
     }
   };
   return (
-    <div className="mt-4">
+    <div className="pt-4">
       <div>
         <h1 className="text-xl">Create your podcast!</h1>
         <form

@@ -36,7 +36,7 @@ export const CarouselLine: React.FC<ICarouselLine> = ({
     <div>
       {loading ? (
         <h1 className="text-podOrange my-5">Loading data...</h1>
-      ) : podcasts.length ? (
+      ) : podcasts?.length ? (
         <Carousel responsive={responsive}>
           {!loading &&
             podcasts.map((podcast: any) => (

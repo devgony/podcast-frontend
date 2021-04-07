@@ -8,6 +8,8 @@ import { Episodes } from "../pages/episodes";
 import { Categories } from "../pages/categories";
 import { Category } from "../pages/category";
 import { Upload } from "../pages/upload";
+import { Library } from "../pages/library";
+import { SearchedResult } from "../pages/searched-result";
 
 export const LoggedInRouter = () => {
   return (
@@ -31,6 +33,12 @@ export const LoggedInRouter = () => {
               </Route>
               <Route path="/upload" exact>
                 <Upload />
+              </Route>
+              <Route path="/library" exact>
+                <Library />
+              </Route>
+              <Route path="/search" exact>
+                <SearchedResult />
               </Route>
               <Route>
                 <NotFound />

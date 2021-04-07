@@ -4,13 +4,9 @@ import { Link, useHistory } from "react-router-dom";
 import { authTokenVar, isLoggedInVar } from "../apollo";
 import { LOCALSTORAGE_TOKEN } from "../constants";
 import Logo from "../images/logo-white.png";
-
-interface IFormProps {
-  searchTerm: string;
-}
+import { Search } from "./search";
 
 export const NavBar = () => {
-  const { register, handleSubmit, getValues } = useForm<IFormProps>();
   const [isMenuOpened, setIsMenuOpened] = useState(false);
   const history = useHistory();
   const logout = () => {
@@ -47,15 +43,7 @@ export const NavBar = () => {
         >
           Library
         </Link>
-        <div className="flex justify-center items-center flex-1">
-          <input
-            ref={register({ required: true })}
-            name="searchTerm"
-            type="Search"
-            className="input rounded-md border-0 h-3/4 w-11/12"
-            placeholder="Saerch Podcasts..."
-          />
-        </div>
+        <Search />
         <Link
           to="/upload"
           className="hover:text-white flex justify-center items-center w-24"

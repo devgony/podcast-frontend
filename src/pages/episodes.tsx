@@ -20,6 +20,10 @@ import {
   subscribeToPodcast,
   subscribeToPodcastVariables,
 } from "../__generated__/subscribeToPodcast";
+import {
+  didISubscribe,
+  didISubscribeVariables,
+} from "../__generated__/didISubscribe";
 
 interface IPodcastParams {
   id: string;
@@ -93,7 +97,7 @@ export const Episodes = () => {
     loading: loadingSubscribed,
     data: dataSubscribed,
     refetch: refetchSubscribed,
-  } = useQuery(DID_I_SUBSCRIBE, {
+  } = useQuery<didISubscribe, didISubscribeVariables>(DID_I_SUBSCRIBE, {
     variables: {
       input: {
         podcastId: +params.id,
@@ -118,7 +122,7 @@ export const Episodes = () => {
       },
     });
   };
-  console.log(loadingSubscribed, dataSubscribed?.userSubcribed);
+  // console.log(loadingSubscribed, dataSubscribed?.didISubscribe.userSubcribed);
   return (
     <div className="px-6 pt-4">
       <Helmet>
@@ -140,7 +144,9 @@ export const Episodes = () => {
               <button
                 onClick={onClickSubscribe}
                 className={`${
-                  dataSubscribed?.userSubcribed ? "bg-podOrange text-white" : ""
+                  dataSubscribed?.didISubscribe.userSubcribed
+                    ? "bg-gradient-to-b from-podGradStart to-podGradEnd text-white"
+                    : ""
                 } focus:outline-none border border-gray-300 rounded-full hover:border-podOrange cursor-pointer px-2 flex items-center mr-1`}
               >
                 <Heart />
@@ -153,7 +159,9 @@ export const Episodes = () => {
               <button
                 onClick={() => SetIsOpened((prev) => !prev)}
                 className={`${
-                  isOpened ? "bg-podOrange text-white" : ""
+                  isOpened
+                    ? "bg-gradient-to-b from-podGradStart to-podGradEnd text-white"
+                    : ""
                 } focus:outline-none border border-gray-300 rounded-full hover:border-podOrange cursor-pointer px-2 flex items-center`}
               >
                 {isOpened ? <XCircle /> : <Add />}
