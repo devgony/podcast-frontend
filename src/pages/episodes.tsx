@@ -1,5 +1,5 @@
 import samplePic from "../images/theDaily.jpeg";
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import gql from "graphql-tag";
 import { useParams } from "react-router";
 import {
@@ -10,6 +10,16 @@ import { getPodcast, getPodcastVariables } from "../__generated__/getPodcast";
 import { getPodcasts } from "../__generated__/getPodcasts";
 import { GetPodcastInput } from "../__generated__/globalTypes";
 import { Helmet } from "react-helmet-async";
+import { Heart } from "../icons/heart";
+import { Share } from "../icons/share";
+import { Add } from "../icons/add";
+import { NewEpisode } from "./new-episode";
+import { useState } from "react";
+import { XCircle } from "../icons/x-circle";
+import {
+  subscribeToPodcast,
+  subscribeToPodcastVariables,
+} from "../__generated__/subscribeToPodcast";
 
 interface IPodcastParams {
   id: string;
@@ -47,18 +57,68 @@ export const GET_EPISODES = gql`
   }
 `;
 
+const SUBSCRIBE_TO_PODCAST = gql`
+  mutation subscribeToPodcast($input: SubscribeToPodcastInput!) {
+    subscribeToPodcast(input: $input) {
+      ok
+      error
+    }
+  }
+`;
+
+const DID_I_SUBSCRIBE = gql`
+  query didISubscribe($input: DidISubscribeInput!) {
+    didISubscribe(input: $input) {
+      ok
+      error
+      userSubcribed
+    }
+  }
+`;
+
 export const Episodes = () => {
   const params = useParams<IPodcastParams>();
+  const [isOpened, SetIsOpened] = useState(false);
   const { data: podcastData, loading: podcastLoading } = useQuery<
     getPodcast,
     getPodcastVariables
   >(GET_PODCAST, {
-    variables: { input: { id: 1 } },
+    variables: { input: { id: +params.id } },
   });
-  const { data: episodesData, loading: episodesLoading, error } = useQuery<
+  const { data: episodesData, loading: episodesLoading, refetch } = useQuery<
     getEpisodes,
     getEpisodesVariables
   >(GET_EPISODES, { variables: { input: { podcastId: +params.id } } });
+  const {
+    loading: loadingSubscribed,
+    data: dataSubscribed,
+    refetch: refetchSubscribed,
+  } = useQuery(DID_I_SUBSCRIBE, {
+    variables: {
+      input: {
+        podcastId: +params.id,
+      },
+    },
+  });
+  const onCompleted = (data: subscribeToPodcast) => {
+    if (data.subscribeToPodcast.ok) {
+      refetchSubscribed();
+    }
+  };
+  const [subscribeToPodcast, { loading, data }] = useMutation<
+    subscribeToPodcast,
+    subscribeToPodcastVariables
+  >(SUBSCRIBE_TO_PODCAST, { onCompleted });
+  const onClickSubscribe = () => {
+    subscribeToPodcast({
+      variables: {
+        input: {
+          podcastId: +params.id,
+        },
+      },
+    });
+  };
+  console.log(loadingSubscribed, dataSubscribed?.userSubcribed);
   return (
     <div className="px-6 pt-4">
       <Helmet>
@@ -77,31 +137,27 @@ export const Episodes = () => {
               rating: {podcastData?.getPodcast.podcast?.rating}
             </h3>
             <div className="flex mb-4">
-              <button className="border border-gray-300 rounded-full hover:border-podOrange cursor-pointer px-2 flex items-center mr-1">
-                <svg
-                  className="w-4"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
-                    clipRule="evenodd"
-                  />
-                </svg>
+              <button
+                onClick={onClickSubscribe}
+                className={`${
+                  dataSubscribed?.userSubcribed ? "bg-podOrange text-white" : ""
+                } focus:outline-none border border-gray-300 rounded-full hover:border-podOrange cursor-pointer px-2 flex items-center mr-1`}
+              >
+                <Heart />
                 Subscribe
               </button>
-              <button className="border border-gray-300 rounded-full hover:border-podOrange cursor-pointer px-2 flex items-center">
-                <svg
-                  className="w-4"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z" />
-                </svg>
+              <button className="focus:outline-none border border-gray-300 rounded-full hover:border-podOrange cursor-pointer px-2 flex items-center">
+                <Share />
                 Share
+              </button>
+              <button
+                onClick={() => SetIsOpened((prev) => !prev)}
+                className={`${
+                  isOpened ? "bg-podOrange text-white" : ""
+                } focus:outline-none border border-gray-300 rounded-full hover:border-podOrange cursor-pointer px-2 flex items-center`}
+              >
+                {isOpened ? <XCircle /> : <Add />}
+                New Episode
               </button>
             </div>
             <h4 className="text-sm mt-1">
@@ -114,6 +170,15 @@ export const Episodes = () => {
               backgroundImage: `url(${podcastData?.getPodcast.podcast?.image})`,
             }}
           ></div>
+        </div>
+      )}
+      {isOpened && (
+        <div className="max-w-lg mx-auto">
+          <NewEpisode
+            podcastId={+params.id}
+            SetIsOpened={SetIsOpened}
+            refetch={refetch}
+          />
         </div>
       )}
       <div className="flex flex-col divide-y divide-gray-300">

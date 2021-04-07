@@ -7,6 +7,7 @@ import { Podcasts } from "../pages/podcasts";
 import { Episodes } from "../pages/episodes";
 import { Categories } from "../pages/categories";
 import { Category } from "../pages/category";
+import { Upload } from "../pages/upload";
 
 export const LoggedInRouter = () => {
   return (
@@ -27,6 +28,9 @@ export const LoggedInRouter = () => {
               </Route>
               <Route path="/category/:slug" exact>
                 <Category />
+              </Route>
+              <Route path="/upload" exact>
+                <Upload />
               </Route>
               <Route>
                 <NotFound />

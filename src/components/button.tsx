@@ -13,7 +13,7 @@ export const Button: React.FC<IButtonProps> = ({
     role="button"
     className={`text-lg font-medium focus:outline-none text-black py-4 transition-colors; ${
       canClick
-        ? "bg-yellow-300 hover:bg-lime-700 bg-ye"
+        ? "bg-gray-700 hover:bg-lime-700 bg-ye text-white"
         : "bg-gray-300 pointer-events-none"
     }`}
   >

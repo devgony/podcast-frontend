@@ -9,7 +9,9 @@ export const Category = () => {
   const { loading, data } = useQueryWith(params.slug);
   return (
     <div className="py-4 px-4">
-      <h1 className="text-xl">{params.slug.toUpperCase()}</h1>
+      <h1 className="text-xl">
+        {params.slug.replace(/-/g, " ").toUpperCase()}
+      </h1>
       <p className="text-sm text-gray-400">podcasts on Podcloud</p>
       <CarouselLine
         loading={loading}
