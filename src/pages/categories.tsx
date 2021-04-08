@@ -18,7 +18,9 @@ const GET_CATEGORIES = gql`
   }
 `;
 export const Categories = () => {
-  const { loading, data } = useQuery<getCategories>(GET_CATEGORIES);
+  const { loading, data } = useQuery<getCategories>(GET_CATEGORIES, {
+    fetchPolicy: "no-cache",
+  });
   return (
     <div className="pt-6 px-2 ">
       <Helmet>
@@ -29,6 +31,7 @@ export const Categories = () => {
         <div className="pt-6 px-3 grid grid-cols-5 gap-4 ">
           {data?.getCategories.categories.map((category) => (
             <Link
+              key={category.id}
               to={`/category/${category.slug}`}
               className="bg-gray-600 justify-self-stretch h-10 flex justify-center items-center text-gray-200 hover:text-white"
             >

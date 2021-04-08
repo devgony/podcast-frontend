@@ -16,6 +16,7 @@ export interface searchPodcasts_searchPodcasts_podcasts_category {
 
 export interface searchPodcasts_searchPodcasts_podcasts {
   __typename: "Podcast";
+  id: number;
   title: string;
   category: searchPodcasts_searchPodcasts_podcasts_category | null;
   rating: number;

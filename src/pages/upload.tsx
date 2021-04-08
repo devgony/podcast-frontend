@@ -1,10 +1,12 @@
 import { useMutation, useQuery } from "@apollo/client";
 import gql from "graphql-tag";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router";
 import { Button } from "../components/button";
 import { CarouselLine } from "../components/carousel-line";
 import { FormError } from "../components/form-error";
+import { Input } from "../components/input";
 import { Add } from "../icons/add";
 import {
   createPodcast,
@@ -43,7 +45,7 @@ interface ICreatePodcastForm {
   title: string;
   categoryName: string;
   intro: string;
-  image: string;
+  file: string;
 }
 
 export const Upload = () => {
@@ -53,6 +55,7 @@ export const Upload = () => {
     getValues,
     formState,
     errors,
+    setValue,
   } = useForm<ICreatePodcastForm>({
     mode: "onChange",
   });
@@ -62,10 +65,15 @@ export const Upload = () => {
     } = data;
     if (ok) {
       alert("Podcast Created! add episode now!");
+      setUploading(false);
       refetch();
+      setValue("title", "");
+      setValue("categoryName", "");
+      setValue("intro", "");
+      setValue("file", "");
     }
   };
-  const [createPodcast, { loading, data }] = useMutation<
+  const [createPodcast, { loading, data, error }] = useMutation<
     createPodcast,
     createPodcastVariables
   >(CREATE_PODCAST, { onCompleted });
@@ -73,10 +81,23 @@ export const Upload = () => {
     loading: loadingPodcasts,
     data: dataPodcasts,
     refetch,
-  } = useQuery<getMyPodcasts>(GET_MY_PODCASTS);
-  const onSubmit = () => {
-    if (!loading) {
-      const { title, categoryName, intro, image } = getValues();
+  } = useQuery<getMyPodcasts>(GET_MY_PODCASTS, { fetchPolicy: "no-cache" });
+  const [uploading, setUploading] = useState(false);
+  const onSubmit = async () => {
+    // if (!loading) {
+    try {
+      setUploading(true);
+      const { title, categoryName, intro, file } = getValues();
+      const actualFile = file[0];
+      const formBody = new FormData();
+      formBody.append("file", actualFile);
+      const { url: image } = await (
+        await fetch("http://localhost:4000/uploads/", {
+          method: "POST",
+          body: formBody,
+        })
+      ).json();
+      // console.log(image);
       createPodcast({
         variables: {
           input: {
@@ -87,8 +108,12 @@ export const Upload = () => {
           },
         },
       });
+    } catch (error) {
+      console.log(error);
     }
+    // }
   };
+  // console.log(error);
   return (
     <div className="pt-4">
       <div>
@@ -127,7 +152,7 @@ export const Upload = () => {
           {errors.intro?.message && (
             <FormError errorMessage={errors.intro?.message} />
           )}
-          <input
+          {/* <input
             ref={register({ required: "Image is required" })}
             className="input"
             name="image"
@@ -136,11 +161,23 @@ export const Upload = () => {
           ></input>
           {errors.image?.message && (
             <FormError errorMessage={errors.image?.message} />
-          )}
+          )} */}
+          {/* <input
+            type="file"
+            name="file"
+            accept="image/*"
+            ref={register({ required: true })}
+          /> */}
+          <Input
+            register={register({ required: true })}
+            name="file"
+            accept="image/*"
+            text="Choose Cover Image"
+          />
           <Button
             actionText="Create"
             canClick={formState.isValid}
-            loading={loading}
+            loading={uploading}
           />
         </form>
       </div>

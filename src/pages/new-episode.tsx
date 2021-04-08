@@ -1,8 +1,10 @@
 import { useMutation } from "@apollo/client";
 import gql from "graphql-tag";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "../components/button";
 import { FormError } from "../components/form-error";
+import { Input } from "../components/input";
 import {
   createEpisode,
   createEpisodeVariables,
@@ -11,7 +13,7 @@ import {
 interface ICreateEpisodeForm {
   title: string;
   content: string;
-  audio: string;
+  file: string;
 }
 
 const CREATE_EPISODE = gql`
@@ -45,6 +47,7 @@ export const NewEpisode = ({
     } = data;
     if (ok) {
       alert("Episode Created!");
+      setUploading(false);
       SetIsOpened((prev: boolean) => !prev);
       refetch();
     }
@@ -55,9 +58,21 @@ export const NewEpisode = ({
   >(CREATE_EPISODE, {
     onCompleted,
   });
-  const onSubmit = () => {
-    if (!loading) {
-      const { title, content, audio } = getValues();
+  const [uploading, setUploading] = useState(false);
+  const onSubmit = async () => {
+    // if (!loading) {
+    try {
+      setUploading(true);
+      const { title, content, file } = getValues();
+      const actualFile = file[0];
+      const formBody = new FormData();
+      formBody.append("file", actualFile);
+      const { url: audio } = await (
+        await fetch("http://localhost:4000/uploads/", {
+          method: "POST",
+          body: formBody,
+        })
+      ).json();
       createEpisode({
         variables: {
           input: {
@@ -68,7 +83,11 @@ export const NewEpisode = ({
           },
         },
       });
+    } catch (error) {
+      console.log(error);
     }
+
+    // }
   };
 
   return (
@@ -95,16 +114,22 @@ export const NewEpisode = ({
         {errors.content?.message && (
           <FormError errorMessage={errors.content?.message} />
         )}
-        <input
+        {/* <input
           ref={register()}
           className="input"
           name="audio"
           placeholder="Audio"
-        ></input>
+        ></input> */}
+        <Input
+          register={register({ required: true })}
+          name="file"
+          accept="audio/*"
+          text="Choose Episode Audio"
+        />
         <Button
           actionText="Create"
           canClick={formState.isValid}
-          loading={loading}
+          loading={uploading}
         />
       </form>
     </div>

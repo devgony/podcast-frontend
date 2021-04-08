@@ -53,6 +53,7 @@ export const useQueryWith = (slug: string) =>
   useQuery<getPodcastsByCategory, getPodcastsByCategoryVariables>(
     GET_PODCASTS_BY_CATEGORY,
     {
+      fetchPolicy: "no-cache",
       variables: {
         input: {
           slug,
@@ -95,7 +96,9 @@ const Map = ({ slug, name }: { slug: string; name: string }) => {
 };
 
 export const Podcasts = () => {
-  const { data, loading } = useQuery<getPodcasts>(GET_PODCASTS);
+  const { data, loading } = useQuery<getPodcasts>(GET_PODCASTS, {
+    fetchPolicy: "no-cache",
+  });
   const {
     data: dataByCategory,
     loading: loadingByCategory,

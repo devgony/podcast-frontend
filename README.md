@@ -52,3 +52,5 @@
 // node_modules/react-scripts/scripts/utils/verifyTypeScriptSetup.js
 151 line: ts.JsxEmit.ReactJsx => ts.JsxEmit.ReactJSX
 ```
+
+/Users/henry/Node/podcast-frontend/node_modules/react-h5-audio-player/src

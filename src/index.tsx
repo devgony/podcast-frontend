@@ -5,6 +5,7 @@ import "./styles/styles.css";
 import "react-multi-carousel/lib/styles.css";
 import App from "./components/app";
 import { HelmetProvider } from "react-helmet-async";
+// import "./styles/custom-player.scss";
 
 const rootElement = document.getElementById("root");
 render(

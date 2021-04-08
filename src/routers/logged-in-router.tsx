@@ -10,8 +10,12 @@ import { Category } from "../pages/category";
 import { Upload } from "../pages/upload";
 import { Library } from "../pages/library";
 import { SearchedResult } from "../pages/searched-result";
+import { Player } from "../components/player";
+import { useState } from "react";
 
 export const LoggedInRouter = () => {
+  const [active, setActive] = useState(false);
+  const [source, setSource] = useState("");
   return (
     <div>
       <Router>
@@ -23,7 +27,7 @@ export const LoggedInRouter = () => {
                 <Podcasts />
               </Route>
               <Route path="/podcast/:id" exact>
-                <Episodes />
+                <Episodes setActive={setActive} setSource={setSource} />
               </Route>
               <Route path="/categories" exact>
                 <Categories />
@@ -46,6 +50,7 @@ export const LoggedInRouter = () => {
             </Switch>
           </div>
         </div>
+        <Player active={active} source={source} setActive={setActive} />
       </Router>
     </div>
   );

@@ -22,7 +22,9 @@ const SEE_SUBSCRIPTIONS = gql`
 `;
 
 export const Library = () => {
-  const { loading, data } = useQuery<seeSubscriptions>(SEE_SUBSCRIPTIONS);
+  const { loading, data } = useQuery<seeSubscriptions>(SEE_SUBSCRIPTIONS, {
+    fetchPolicy: "no-cache",
+  });
   console.log(loading, data);
   return (
     <div>

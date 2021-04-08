@@ -56,6 +56,7 @@ export const GET_EPISODES = gql`
         id
         title
         content
+        audio
       }
     }
   }
@@ -80,24 +81,29 @@ const DID_I_SUBSCRIBE = gql`
   }
 `;
 
-export const Episodes = () => {
+export const Episodes = ({ setActive, setSource }: any) => {
   const params = useParams<IPodcastParams>();
   const [isOpened, SetIsOpened] = useState(false);
   const { data: podcastData, loading: podcastLoading } = useQuery<
     getPodcast,
     getPodcastVariables
   >(GET_PODCAST, {
+    fetchPolicy: "no-cache",
     variables: { input: { id: +params.id } },
   });
   const { data: episodesData, loading: episodesLoading, refetch } = useQuery<
     getEpisodes,
     getEpisodesVariables
-  >(GET_EPISODES, { variables: { input: { podcastId: +params.id } } });
+  >(GET_EPISODES, {
+    fetchPolicy: "no-cache",
+    variables: { input: { podcastId: +params.id } },
+  });
   const {
     loading: loadingSubscribed,
     data: dataSubscribed,
     refetch: refetchSubscribed,
   } = useQuery<didISubscribe, didISubscribeVariables>(DID_I_SUBSCRIBE, {
+    fetchPolicy: "no-cache",
     variables: {
       input: {
         podcastId: +params.id,
@@ -195,7 +201,18 @@ export const Episodes = () => {
             <div className="py-10" key={episode.id}>
               <h1 className="text-lg">{episode.title}</h1>
               <p className="text-sm max-w-lg truncate">{episode.content}</p>
-              <div>⏯</div>
+              <div
+                onClick={() => {
+                  setActive(true);
+                  setSource(episode.audio);
+                }}
+              >
+                ⏯
+              </div>
+              {/* <audio controls className="w-full text-red-500">
+                <source className="" src={episode.audio} type="audio/mpeg" />
+                Your browser does not support the audio element.
+              </audio> */}
             </div>
           ))}
       </div>
