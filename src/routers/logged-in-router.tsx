@@ -50,7 +50,12 @@ export const LoggedInRouter = () => {
             </Switch>
           </div>
         </div>
-        <Player active={active} source={source} setActive={setActive} />
+        <Player
+          active={active}
+          source={source}
+          setActive={setActive}
+          setSource={setSource}
+        />
       </Router>
     </div>
   );

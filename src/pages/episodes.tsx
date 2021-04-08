@@ -24,6 +24,12 @@ import {
   didISubscribe,
   didISubscribeVariables,
 } from "../__generated__/didISubscribe";
+import { PlayIcon } from "../icons/play-icon";
+import { Cloud } from "../icons/cloud";
+import {
+  reviewPodcast,
+  reviewPodcastVariables,
+} from "../__generated__/reviewPodcast";
 
 interface IPodcastParams {
   id: string;
@@ -81,13 +87,35 @@ const DID_I_SUBSCRIBE = gql`
   }
 `;
 
+const REVIEW_PODCAST = gql`
+  mutation reviewPodcast($input: ReviewPodcastInput!) {
+    reviewPodcast(input: $input) {
+      ok
+      error
+    }
+  }
+`;
+
 export const Episodes = ({ setActive, setSource }: any) => {
+  const [clouds, setClouds] = useState(Array(5).fill(false));
+  const review = (target: number) => {
+    setClouds((clouds) => clouds.map((_, i) => (i < target ? true : false)));
+    reviewPodcast({
+      variables: {
+        input: {
+          podcastId: +params.id,
+          rating: target,
+        },
+      },
+    });
+  };
   const params = useParams<IPodcastParams>();
   const [isOpened, SetIsOpened] = useState(false);
-  const { data: podcastData, loading: podcastLoading } = useQuery<
-    getPodcast,
-    getPodcastVariables
-  >(GET_PODCAST, {
+  const {
+    data: podcastData,
+    loading: podcastLoading,
+    refetch: refetchPodcast,
+  } = useQuery<getPodcast, getPodcastVariables>(GET_PODCAST, {
     fetchPolicy: "no-cache",
     variables: { input: { id: +params.id } },
   });
@@ -128,6 +156,16 @@ export const Episodes = ({ setActive, setSource }: any) => {
       },
     });
   };
+  const onCompletedReview = () => {
+    refetchPodcast();
+  };
+  const [
+    reviewPodcast,
+    { loading: loadingReview, data: dataReview },
+  ] = useMutation<reviewPodcast, reviewPodcastVariables>(REVIEW_PODCAST, {
+    onCompleted: onCompletedReview,
+  });
+  console.log(podcastData?.getPodcast.podcast);
   // console.log(loadingSubscribed, dataSubscribed?.didISubscribe.userSubcribed);
   return (
     <div className="px-6 pt-4">
@@ -143,9 +181,26 @@ export const Episodes = ({ setActive, setSource }: any) => {
             <h2 className="text-sm text-gray-400">
               {podcastData?.getPodcast.podcast?.category?.name}
             </h2>
-            <h3 className="text-sm mb-4">
-              rating: {podcastData?.getPodcast.podcast?.rating}
-            </h3>
+            <div className="flex items-center py-4">
+              <h3 className="text-2xl">
+                Averge: {podcastData?.getPodcast.podcast?.rating}
+                {Number.isInteger(podcastData?.getPodcast.podcast?.rating)
+                  ? ".0"
+                  : null}
+              </h3>
+              <div className="ml-4 flex">
+                {clouds.map((cloud, i) => (
+                  <Cloud
+                    key={i + 1}
+                    active={cloud}
+                    onClick={() => review(i + 1)}
+                  />
+                ))}
+              </div>
+              <h1 className="text-podOrange text-2xl ml-2">
+                {clouds.filter((cloud) => cloud).length}.0
+              </h1>
+            </div>
             <div className="flex mb-4">
               <button
                 onClick={onClickSubscribe}
@@ -195,6 +250,7 @@ export const Episodes = ({ setActive, setSource }: any) => {
           />
         </div>
       )}
+      <div>comments</div>
       <div className="flex flex-col divide-y divide-gray-300">
         {!episodesLoading &&
           episodesData?.getEpisodes.episodes?.map((episode) => (
@@ -202,12 +258,13 @@ export const Episodes = ({ setActive, setSource }: any) => {
               <h1 className="text-lg">{episode.title}</h1>
               <p className="text-sm max-w-lg truncate">{episode.content}</p>
               <div
+                className="cursor-pointer"
                 onClick={() => {
                   setActive(true);
                   setSource(episode.audio);
                 }}
               >
-                ⏯
+                <PlayIcon />
               </div>
               {/* <audio controls className="w-full text-red-500">
                 <source className="" src={episode.audio} type="audio/mpeg" />

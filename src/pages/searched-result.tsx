@@ -34,7 +34,7 @@ export const SearchedResult = () => {
   const [callQuery, { loading, data, error }] = useLazyQuery<
     searchPodcasts,
     searchPodcastsVariables
-  >(SEARCH_PODCASTS);
+  >(SEARCH_PODCASTS, { fetchPolicy: "no-cache" });
   useEffect(() => {
     const [_, searchKeyword] = location.search.split("?term=");
     callQuery({
@@ -45,6 +45,7 @@ export const SearchedResult = () => {
       },
     });
   }, [history, location]);
+  console.log(error);
   return (
     <div className="pt-8">
       <h1>Searched Total: {!loading && data?.searchPodcasts.count}</h1>

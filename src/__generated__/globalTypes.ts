@@ -53,6 +53,11 @@ export interface LoginInput {
   password: string;
 }
 
+export interface ReviewPodcastInput {
+  rating: number;
+  podcastId: number;
+}
+
 export interface SearchPodcastsInput {
   searchKeyword: string;
 }
