@@ -1,3 +1,4 @@
+import { CopyToClipboard } from "react-copy-to-clipboard";
 import samplePic from "../images/theDaily.jpeg";
 import { useMutation, useQuery } from "@apollo/client";
 import gql from "graphql-tag";
@@ -8,12 +9,12 @@ import {
 } from "../__generated__/getEpisodes";
 import { getPodcast, getPodcastVariables } from "../__generated__/getPodcast";
 import { getPodcasts } from "../__generated__/getPodcasts";
-import { GetPodcastInput } from "../__generated__/globalTypes";
+import { GetPodcastInput, UserRole } from "../__generated__/globalTypes";
 import { Helmet } from "react-helmet-async";
 import { Heart } from "../icons/heart";
 import { Share } from "../icons/share";
 import { Add } from "../icons/add";
-import { NewEpisode } from "./new-episode";
+import { EpisodeForm } from "./episode-form";
 import { useEffect, useState } from "react";
 import { XCircle } from "../icons/x-circle";
 import {
@@ -39,6 +40,19 @@ import {
   updatePodcast,
   updatePodcastVariables,
 } from "../__generated__/updatePodcast";
+import {
+  deletePodcast,
+  deletePodcastVariables,
+} from "../__generated__/deletePodcast";
+import {
+  updateEpisode,
+  updateEpisodeVariables,
+} from "../__generated__/updateEpisode";
+import {
+  deleteEpisode,
+  deleteEpisodeVariables,
+} from "../__generated__/deleteEpisode";
+import { useMe } from "../hooks/use-me";
 
 interface IPodcastParams {
   id: string;
@@ -58,6 +72,9 @@ export const GET_PODCAST = gql`
         rating
         image
         intro
+        owner {
+          id
+        }
       }
     }
   }
@@ -116,7 +133,26 @@ const GET_MY_RATING = gql`
   }
 `;
 
+const DELETE_PODCAST = gql`
+  mutation deletePodcast($input: DeletePodcastInput!) {
+    deletePodcast(input: $input) {
+      ok
+      error
+    }
+  }
+`;
+
+const DELETE_EPISODE = gql`
+  mutation deleteEpisode($input: DeleteEpisodeInput!) {
+    deleteEpisode(input: $input) {
+      ok
+      error
+    }
+  }
+`;
+
 export const Episodes = ({ setActive, setSource }: any) => {
+  const me = useMe();
   const history = useHistory();
   const [clouds, setClouds] = useState(Array(5).fill(false));
   const review = (target: number) => {
@@ -131,7 +167,14 @@ export const Episodes = ({ setActive, setSource }: any) => {
     });
   };
   const params = useParams<IPodcastParams>();
-  const [isOpened, SetIsOpened] = useState(false);
+  const [isOpened, setIsOpened] = useState(false);
+  const [newActive, setNewActive] = useState(false);
+  const [editActive, setEditActive] = useState(false);
+  const [updateMode, SetUpdateMode] = useState(false);
+  const [targetEpisode, SetTargetEpisode] = useState({
+    title: "",
+    content: "",
+  });
   const {
     data: podcastData,
     loading: podcastLoading,
@@ -199,12 +242,34 @@ export const Episodes = ({ setActive, setSource }: any) => {
       },
     },
   });
+
+  const [deletePodcast] = useMutation<deletePodcast, deletePodcastVariables>(
+    DELETE_PODCAST,
+    {
+      onCompleted: () => {
+        history.push("/");
+      },
+    }
+  );
+
+  const [deleteEpisode] = useMutation<deleteEpisode, deleteEpisodeVariables>(
+    DELETE_EPISODE,
+    {
+      onCompleted: () => {
+        refetch();
+      },
+    }
+  );
+
+  const isHostOwner =
+    me.data?.me.id === podcastData?.getPodcast.podcast?.owner.id &&
+    me.data?.me.role === UserRole.Host;
+
   useEffect(() => {
-    if (dataGetMyRating?.getMyRating.rating) {
+    if (dataGetMyRating?.getMyRating.rating && !isHostOwner) {
       review(dataGetMyRating?.getMyRating.rating);
     }
   }, [dataGetMyRating?.getMyRating.rating]);
-  // console.log(loadingSubscribed, dataSubscribed?.didISubscribe.userSubcribed);
   return (
     <div className="px-6 pt-4">
       <Helmet>
@@ -217,13 +282,32 @@ export const Episodes = ({ setActive, setSource }: any) => {
               <h1 className="text-2xl">
                 {podcastData?.getPodcast.podcast?.title}
               </h1>
-              <RoundedButton
-                className="ml-2 "
-                content="Edit"
-                onClick={() => {
-                  history.push(`/update-podcast/${params.id}`);
-                }}
-              />
+              {isHostOwner && (
+                <RoundedButton
+                  className="ml-1 "
+                  content="Edit"
+                  onClick={() => {
+                    history.push(`/update-podcast/${params.id}`);
+                  }}
+                />
+              )}
+              {isHostOwner && (
+                <RoundedButton
+                  className="ml-1 "
+                  content="Delete"
+                  onClick={() => {
+                    if (
+                      window.confirm(
+                        `Are you sure to Delete "${podcastData?.getPodcast.podcast?.title}"?`
+                      )
+                    ) {
+                      deletePodcast({
+                        variables: { input: { id: +params.id } },
+                      });
+                    }
+                  }}
+                />
+              )}
             </div>
             <h2 className="text-sm text-gray-400">
               {podcastData?.getPodcast.podcast?.category?.name}
@@ -235,60 +319,81 @@ export const Episodes = ({ setActive, setSource }: any) => {
                   ? ".0"
                   : null}
               </h3>
-              <div className="ml-4 flex">
-                {clouds.map((cloud, i) => (
-                  <Cloud
-                    key={i + 1}
-                    active={cloud}
-                    onClick={() => review(i + 1)}
-                  />
-                ))}
-              </div>
-              <h1 className="text-podOrange text-xl ml-2">
-                {/* {clouds.filter((cloud) => cloud).length}.0 */}
-                {dataGetMyRating?.getMyRating.rating}
-                {Number.isInteger(dataGetMyRating?.getMyRating.rating)
-                  ? ".0"
-                  : null}
-              </h1>
+              {!isHostOwner && (
+                <div className="flex items-center">
+                  <div className="ml-4 flex">
+                    {clouds.map((cloud, i) => (
+                      <Cloud
+                        key={i + 1}
+                        active={cloud}
+                        onClick={() => review(i + 1)}
+                      />
+                    ))}
+                  </div>
+                  <h1 className="text-podOrange text-xl ml-2">
+                    {/* {clouds.filter((cloud) => cloud).length}.0 */}
+                    {dataGetMyRating?.getMyRating.rating}
+                    {Number.isInteger(dataGetMyRating?.getMyRating.rating)
+                      ? ".0"
+                      : null}
+                  </h1>
+                </div>
+              )}
             </div>
             <div className="flex mb-4">
-              <RoundedButton
-                onClick={onClickSubscribe}
-                className={`${
-                  dataSubscribed?.didISubscribe.userSubcribed
-                    ? "bg-gradient-to-b from-podGradStart to-podGradEnd text-white"
-                    : ""
-                }`}
-                content={
-                  <>
-                    <Heart />
-                    Subscribe
-                  </>
-                }
-              />
-              <RoundedButton
-                content={
-                  <>
-                    <Share />
-                    Share
-                  </>
-                }
-              />
-              <RoundedButton
-                onClick={() => SetIsOpened((prev) => !prev)}
-                className={`${
-                  isOpened
-                    ? "bg-gradient-to-b from-podGradStart to-podGradEnd text-white"
-                    : ""
-                }`}
-                content={
-                  <>
-                    {isOpened ? <XCircle /> : <Add />}
-                    New Episode
-                  </>
-                }
-              />
+              {!isHostOwner && (
+                <RoundedButton
+                  onClick={onClickSubscribe}
+                  className={`${
+                    dataSubscribed?.didISubscribe.userSubcribed
+                      ? "bg-gradient-to-b from-podGradStart to-podGradEnd text-white"
+                      : ""
+                  }`}
+                  content={
+                    <>
+                      <Heart />
+                      Subscribe
+                    </>
+                  }
+                />
+              )}
+              <CopyToClipboard
+                text={window.location.href}
+                onCopy={() => {
+                  alert("URL is copied to clipboard!");
+                }}
+              >
+                <RoundedButton
+                  auth={true}
+                  content={
+                    <>
+                      <Share />
+                      Share
+                    </>
+                  }
+                />
+              </CopyToClipboard>
+
+              {isHostOwner && (
+                <RoundedButton
+                  onClick={() => {
+                    SetUpdateMode(false);
+                    setIsOpened((prev) => !prev);
+                    setNewActive((prev) => !prev);
+                  }}
+                  className={`${
+                    newActive
+                      ? "bg-gradient-to-b from-podGradStart to-podGradEnd text-white"
+                      : ""
+                  }`}
+                  content={
+                    <>
+                      {newActive ? <XCircle /> : <Add />}
+                      New Episode
+                    </>
+                  }
+                />
+              )}
             </div>
             <h4 className="text-sm mt-1">
               {podcastData?.getPodcast.podcast?.intro}
@@ -304,33 +409,71 @@ export const Episodes = ({ setActive, setSource }: any) => {
       )}
       {isOpened && (
         <div className="max-w-lg mx-auto">
-          <NewEpisode
+          <EpisodeForm
             podcastId={+params.id}
-            SetIsOpened={SetIsOpened}
+            setIsOpened={setIsOpened}
+            setNewActive={setNewActive}
+            setEditActive={setEditActive}
             refetch={refetch}
+            updateMode={updateMode}
+            episode={targetEpisode}
           />
         </div>
       )}
-      <div>comments</div>
+      {/* <div>comments</div> */}
       <div className="flex flex-col divide-y divide-gray-300">
         {!episodesLoading &&
           episodesData?.getEpisodes.episodes?.map((episode) => (
             <div className="py-10" key={episode.id}>
-              <h1 className="text-lg">{episode.title}</h1>
-              <p className="text-sm max-w-lg truncate">{episode.content}</p>
-              <div
-                className="cursor-pointer"
-                onClick={() => {
-                  setActive(true);
-                  setSource(episode.audio);
-                }}
-              >
-                <PlayIcon />
+              <div className="flex items-center">
+                <h1 className="text-lg">{episode.title}</h1>
+                {isHostOwner && (
+                  <RoundedButton
+                    onClick={() => {
+                      SetTargetEpisode(episode);
+                      SetUpdateMode(true);
+                      setIsOpened((prev) => !prev);
+                      setEditActive((prev) => !prev);
+                    }}
+                    className={`${
+                      editActive
+                        ? "bg-gradient-to-b from-podGradStart to-podGradEnd text-white"
+                        : ""
+                    } ml-1`}
+                    content={
+                      <>
+                        {editActive ? <XCircle /> : <Add />}
+                        Edit
+                      </>
+                    }
+                  />
+                )}
+                {isHostOwner && (
+                  <RoundedButton
+                    onClick={() => {
+                      if (
+                        window.confirm(
+                          `Are you sure to Delete "${episode.title}"?`
+                        )
+                      ) {
+                        deleteEpisode({
+                          variables: { input: { id: episode.id } },
+                        });
+                      }
+                    }}
+                    content={"Delete"}
+                  />
+                )}
               </div>
-              {/* <audio controls className="w-full text-red-500">
-                <source className="" src={episode.audio} type="audio/mpeg" />
-                Your browser does not support the audio element.
-              </audio> */}
+              <p className="text-sm max-w-lg truncate">{episode.content}</p>
+              <div>
+                <PlayIcon
+                  onClick={() => {
+                    setActive(true);
+                    setSource(episode.audio);
+                  }}
+                />
+              </div>
             </div>
           ))}
       </div>

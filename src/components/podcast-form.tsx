@@ -148,9 +148,7 @@ export const PodcastForm = ({
       setValue("intro", intro);
     }
   }, []);
-  useEffect(() => {
-    console.log(watch().file.length);
-  });
+
   return (
     <form
       className="max-w-2xl mx-auto flex flex-col"

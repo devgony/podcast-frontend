@@ -14,7 +14,7 @@ export interface getEpisodes_getEpisodes_episodes {
   id: number;
   title: string;
   content: string;
-  audio: string;
+  audio: string | null;
 }
 
 export interface getEpisodes_getEpisodes {

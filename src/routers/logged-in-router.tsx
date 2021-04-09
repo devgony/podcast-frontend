@@ -14,6 +14,7 @@ import { Player } from "../components/player";
 import { EditProfile } from "../pages/edit-profile";
 import { useState } from "react";
 import { UpdatePodcast } from "../pages/update-podcast";
+import { Dashboard } from "../pages/dashboard";
 
 export const LoggedInRouter = () => {
   const [active, setActive] = useState(false);
@@ -52,6 +53,9 @@ export const LoggedInRouter = () => {
               </Route>
               <Route path="/edit-profile" exact>
                 <EditProfile />
+              </Route>
+              <Route path="/dashboard" exact>
+                <Dashboard />
               </Route>
               <Route>
                 <NotFound />

@@ -1,8 +1,9 @@
-export const PlayIcon = () => {
+export const PlayIcon = ({ onClick }: any) => {
   return (
     <svg
+      onClick={onClick}
       xmlns="http://www.w3.org/2000/svg"
-      className="w-12 text-podOrange"
+      className="w-12 text-podOrange cursor-pointer"
       viewBox="0 0 20 20"
       fill="currentColor"
     >

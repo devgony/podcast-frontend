@@ -24,6 +24,7 @@
     "node-sass": "^5.0.0",
     "postcss": "^8.2.6",
     "react": "^17.0.1",
+    "react-copy-to-clipboard": "^5.0.3",
     "react-dom": "^17.0.1",
     "react-h5-audio-player": "^3.7.0",
     "react-helmet": "^6.1.0",
@@ -72,6 +73,7 @@
   "devDependencies": {
     "@testing-library/cypress": "^7.0.4",
     "@types/googlemaps": "^3.43.3",
+    "@types/react-copy-to-clipboard": "^5.0.0",
     "@types/react-helmet": "^6.1.0",
     "@types/react-router-dom": "^5.1.7",
     "mock-apollo-client": "^1.0.0"

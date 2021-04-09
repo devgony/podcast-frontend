@@ -13,5 +13,5 @@ export const ME = gql`
 `;
 
 export const useMe = () => {
-  return useQuery<me>(ME);
+  return useQuery<me>(ME, { fetchPolicy: "no-cache" });
 };

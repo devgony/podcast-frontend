@@ -14,13 +14,20 @@ export interface getPodcast_getPodcast_podcast_category {
   name: string;
 }
 
+export interface getPodcast_getPodcast_podcast_owner {
+  __typename: "User";
+  id: number;
+}
+
 export interface getPodcast_getPodcast_podcast {
   __typename: "Podcast";
+  id: number;
   title: string;
   category: getPodcast_getPodcast_podcast_category | null;
   rating: number;
   image: string | null;
   intro: string | null;
+  owner: getPodcast_getPodcast_podcast_owner;
 }
 
 export interface getPodcast_getPodcast {
