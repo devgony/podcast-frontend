@@ -82,4 +82,4 @@
 - ✅ Subscribe to a Podcast
 - ✅ See Subscriptions
 - See Feed (Episodes of Podcasts the user is subscribed to combined)
-- Bonus points if you make a audio player using React
+- ✅ Bonus points if you make a audio player using React
