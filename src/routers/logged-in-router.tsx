@@ -11,7 +11,9 @@ import { Upload } from "../pages/upload";
 import { Library } from "../pages/library";
 import { SearchedResult } from "../pages/searched-result";
 import { Player } from "../components/player";
+import { EditProfile } from "../pages/edit-profile";
 import { useState } from "react";
+import { UpdatePodcast } from "../pages/update-podcast";
 
 export const LoggedInRouter = () => {
   const [active, setActive] = useState(false);
@@ -29,6 +31,10 @@ export const LoggedInRouter = () => {
               <Route path="/podcast/:id" exact>
                 <Episodes setActive={setActive} setSource={setSource} />
               </Route>
+
+              <Route path="/update-podcast/:id" exact>
+                <UpdatePodcast />
+              </Route>
               <Route path="/categories" exact>
                 <Categories />
               </Route>
@@ -43,6 +49,9 @@ export const LoggedInRouter = () => {
               </Route>
               <Route path="/search" exact>
                 <SearchedResult />
+              </Route>
+              <Route path="/edit-profile" exact>
+                <EditProfile />
               </Route>
               <Route>
                 <NotFound />

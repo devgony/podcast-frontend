@@ -36,7 +36,15 @@ export interface DidISubscribeInput {
   podcastId: number;
 }
 
+export interface EditProfileInput {
+  password?: string | null;
+}
+
 export interface GetEpisodesInput {
+  podcastId: number;
+}
+
+export interface GetMyRatingInput {
   podcastId: number;
 }
 
@@ -64,6 +72,14 @@ export interface SearchPodcastsInput {
 
 export interface SubscribeToPodcastInput {
   podcastId: number;
+}
+
+export interface UpdatePodcastInput {
+  title?: string | null;
+  image?: string | null;
+  intro?: string | null;
+  categoryName?: string | null;
+  id: number;
 }
 
 //==============================================================
