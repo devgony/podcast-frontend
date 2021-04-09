@@ -5,6 +5,7 @@ import { authTokenVar, isLoggedInVar } from "../apollo";
 import { LOCALSTORAGE_TOKEN } from "../constants";
 import { IsHost } from "../hooks/is-host";
 import { useMe } from "../hooks/use-me";
+import { Nomad } from "../icons/nomad";
 import Logo from "../images/logo-white.png";
 import { UserRole } from "../__generated__/globalTypes";
 import { Search } from "./search";
@@ -22,7 +23,7 @@ export const NavBar = () => {
   };
   console.log(me.data?.me.role);
   return (
-    <div className="bg-gray-700 ">
+    <div className="bg-gray-700 sticky top-0 z-50">
       <div className="max-w-screen-lg m-auto h-11 flex text-gray-200">
         <Link
           to="/"

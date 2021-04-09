@@ -43,7 +43,7 @@ export const CarouselLine: React.FC<ICarouselLine> = ({
               <div key={podcast.id} className="text-center">
                 <Link to={`/podcast/${podcast.id}`}>
                   <div
-                    className="bg-no-repeat bg-center mb-2 p-32"
+                    className="bg-no-repeat bg-center mb-2 p-32 bg-cover"
                     style={{ backgroundImage: `url(${podcast.image})` }}
                   ></div>
                   <h1>{podcast.title}</h1>

@@ -18,8 +18,8 @@ export const Dashboard = () => {
   const { data, loading } = useQuery<getMyListeners>(GET_MY_LISTENERS);
   console.log();
   return (
-    <div className="pt-4 px-4">
-      <h1>See Listeners and Reviews</h1>
+    <div className="pt-6 px-2">
+      <h1 className="text-xl text-center">See Listeners and Reviews</h1>
       <div className="grid grid-cols-3 gap-1 mx-auto max-w-3xl mt-4 bg-gray-200 text-center">
         {["Email", "Title", "Rating"].map((e) => (
           <>

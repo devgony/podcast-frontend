@@ -1,6 +1,6 @@
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import samplePic from "../images/theDaily.jpeg";
-import { useMutation, useQuery } from "@apollo/client";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import gql from "graphql-tag";
 import { useHistory, useParams } from "react-router";
 import {
@@ -190,11 +190,14 @@ export const Episodes = ({ setActive, setSource }: any) => {
     fetchPolicy: "no-cache",
     variables: { input: { podcastId: +params.id } },
   });
-  const {
-    loading: loadingSubscribed,
-    data: dataSubscribed,
-    refetch: refetchSubscribed,
-  } = useQuery<didISubscribe, didISubscribeVariables>(DID_I_SUBSCRIBE, {
+  const [
+    didISubscribe,
+    {
+      loading: loadingSubscribed,
+      data: dataSubscribed,
+      refetch: refetchSubscribed,
+    },
+  ] = useLazyQuery<didISubscribe, didISubscribeVariables>(DID_I_SUBSCRIBE, {
     fetchPolicy: "no-cache",
     variables: {
       input: {
@@ -203,7 +206,7 @@ export const Episodes = ({ setActive, setSource }: any) => {
     },
   });
   const onCompleted = (data: subscribeToPodcast) => {
-    if (data.subscribeToPodcast.ok) {
+    if (data.subscribeToPodcast.ok && refetchSubscribed) {
       refetchSubscribed();
     }
   };
@@ -222,7 +225,7 @@ export const Episodes = ({ setActive, setSource }: any) => {
   };
   const onCompletedReview = () => {
     refetchPodcast();
-    refetchReview();
+    if (!loadingGetMyRating && refetchReview) refetchReview();
   };
   const [
     reviewPodcast,
@@ -230,11 +233,14 @@ export const Episodes = ({ setActive, setSource }: any) => {
   ] = useMutation<reviewPodcast, reviewPodcastVariables>(REVIEW_PODCAST, {
     onCompleted: onCompletedReview,
   });
-  const {
-    data: dataGetMyRating,
-    loading: loadingGetMyRating,
-    refetch: refetchReview,
-  } = useQuery<getMyRating, getMyRatingVariables>(GET_MY_RATING, {
+  const [
+    getMyRating,
+    {
+      data: dataGetMyRating,
+      loading: loadingGetMyRating,
+      refetch: refetchReview,
+    },
+  ] = useLazyQuery<getMyRating, getMyRatingVariables>(GET_MY_RATING, {
     fetchPolicy: "no-cache",
     variables: {
       input: {
@@ -270,6 +276,13 @@ export const Episodes = ({ setActive, setSource }: any) => {
       review(dataGetMyRating?.getMyRating.rating);
     }
   }, [dataGetMyRating?.getMyRating.rating]);
+
+  useEffect(() => {
+    if (me.data?.me.role === UserRole.Listener) {
+      getMyRating();
+      didISubscribe();
+    }
+  }, [me]);
   return (
     <div className="px-6 pt-4">
       <Helmet>
@@ -408,7 +421,7 @@ export const Episodes = ({ setActive, setSource }: any) => {
         </div>
       )}
       {isOpened && (
-        <div className="max-w-lg mx-auto">
+        <div className="max-w-lg mx-auto pt-6">
           <EpisodeForm
             podcastId={+params.id}
             setIsOpened={setIsOpened}
@@ -424,7 +437,7 @@ export const Episodes = ({ setActive, setSource }: any) => {
       <div className="flex flex-col divide-y divide-gray-300">
         {!episodesLoading &&
           episodesData?.getEpisodes.episodes?.map((episode) => (
-            <div className="py-10" key={episode.id}>
+            <div className="py-4" key={episode.id}>
               <div className="flex items-center">
                 <h1 className="text-lg">{episode.title}</h1>
                 {isHostOwner && (
@@ -465,14 +478,16 @@ export const Episodes = ({ setActive, setSource }: any) => {
                   />
                 )}
               </div>
-              <p className="text-sm max-w-lg truncate">{episode.content}</p>
-              <div>
+              <div className="flex items-center">
                 <PlayIcon
                   onClick={() => {
                     setActive(true);
                     setSource(episode.audio);
                   }}
                 />
+                <p className="text-sm w-11/12 overflow-auto h-24 mx-auto my-2">
+                  {episode.content}
+                </p>
               </div>
             </div>
           ))}

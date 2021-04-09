@@ -54,8 +54,8 @@ export const EditProfile = () => {
     editProfileVariables
   >(EDIT_PROFILE_INPUT, { onCompleted });
   return (
-    <div>
-      <h1>Edit Your password</h1>
+    <div className="pt-6 px-2">
+      <h1 className="text-xl text-center py-6">Edit Your password</h1>
       <form
         className="grid gap-3 mb-4 max-w-lg mx-auto"
         onSubmit={handleSubmit(onSubmit)}

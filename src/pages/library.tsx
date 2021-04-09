@@ -27,8 +27,8 @@ export const Library = () => {
   });
   console.log(loading, data);
   return (
-    <div>
-      <h1>Podcast You Subscribed</h1>
+    <div className="pt-6 px-2">
+      <h1 className="text-xl">Podcast You Subscribed</h1>
       <CarouselLine
         loading={loading}
         podcasts={data?.seeSubscriptions.subscribedPodcasts}
