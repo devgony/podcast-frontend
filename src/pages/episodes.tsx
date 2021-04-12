@@ -278,7 +278,8 @@ export const Episodes = ({ setActive, setSource }: any) => {
   }, [dataGetMyRating?.getMyRating.rating]);
 
   useEffect(() => {
-    if (me.data?.me.role === UserRole.Listener) {
+    // if (me.data?.me.role === UserRole.Listener) {
+    if (!isHostOwner) {
       getMyRating();
       didISubscribe();
     }
