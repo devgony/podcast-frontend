@@ -24,7 +24,7 @@ export const Search = () => {
         name="searchTerm"
         type="Search"
         className="input rounded-md border-0 h-3/4 w-11/12 pr-8"
-        placeholder="Saerch Podcasts..."
+        placeholder="Search Podcasts..."
       />
       <SearchIcon onClick={onSubmit} />
     </form>
