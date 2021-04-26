@@ -39,7 +39,7 @@ export const CreateAccount = () => {
   } = useForm<ICreateAccountForm>({
     mode: "onChange",
     defaultValues: {
-      role: UserRole.Listener,
+      role: UserRole.Host,
     },
   });
   const onCompleted = (data: createAccountMutation) => {
